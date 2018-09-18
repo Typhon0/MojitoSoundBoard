@@ -1,0 +1,7 @@
+.controlButton {
+    -fx-background-color: transparent;
+}
+
+.controlButton:pressed SVGPath {
+    -fx-fill: #2b2b2b;
+}

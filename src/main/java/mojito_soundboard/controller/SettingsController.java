@@ -1,9 +1,19 @@
-package mojito_soundboard;
+package mojito_soundboard.controller;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
+import mojito_soundboard.MainApp;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -14,22 +24,24 @@ public class SettingsController {
     ComboBox<String> audioDeviceList;
 
     @FXML
-    Button play;
+    StackPane settings;
 
-    private Mixer device;
+    @FXML
+    Button exit;
+
+    private MainApp mainApp;
+
+    public SettingsController() {
+
+    }
 
     @FXML
     public void initialize() {
-
-        audioDeviceList.valueProperty().addListener((observable, oldValue, newValue) -> device = getMixer(newValue));
-
         Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
         for (int i = 0; i < mixerInfo.length; i++) {
             Mixer.Info info = mixerInfo[i];
             audioDeviceList.getItems().add(info.getName());
         }
-
-
     }
 
 
@@ -46,20 +58,28 @@ public class SettingsController {
     }
 
 
-    public void play(ActionEvent actionEvent) {
+    public void exit(ActionEvent actionEvent) {
+        Timeline t =
+                new Timeline(
+                        new KeyFrame(Duration.millis(0),
+                                new KeyValue(settings.opacityProperty(), 1, Interpolator.SPLINE(0.25, 0.1, 0.25, 1)),
+                                new KeyValue(settings.scaleXProperty(), 1, Interpolator.SPLINE(0.25, 0.1, 0.25, 1)),
+                                new KeyValue(settings.scaleYProperty(), 1, Interpolator.SPLINE(0.25, 0.1, 0.25, 1))
 
-        try {
-            AudioInputStream inputStream = AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("piano2.wav"));
-            Clip clip = AudioSystem.getClip(device.getMixerInfo());
-            clip.open(inputStream);
-            clip.start();
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                        ),
+                        new KeyFrame(Duration.millis(200),
+                                new KeyValue(settings.opacityProperty(), 0, Interpolator.SPLINE(0.25, 0.1, 0.25, 1)),
+                                new KeyValue(settings.scaleXProperty(), 1.5, Interpolator.SPLINE(0.25, 0.1, 0.25, 1)),
+                                new KeyValue(settings.scaleYProperty(), 1.5, Interpolator.SPLINE(0.25, 0.1, 0.25, 1)),
+                                new KeyValue(settings.visibleProperty(), false, Interpolator.SPLINE(0.25, 0.1, 0.25, 1))
+                        )
+                );
+        t.play();
 
+
+    }
+
+    public void setMainApp(MainApp mainApp) {
+        this.mainApp = mainApp;
     }
 }

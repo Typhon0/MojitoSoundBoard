@@ -4,8 +4,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,10 +12,11 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import mojito_soundboard.MainApp;
+import mojito_soundboard.model.AudioClip;
 
-import javax.sound.sampled.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -41,23 +41,25 @@ public class MainController {
      */
     private ArrayList<Button> board;
 
+
     @FXML
     Parent settings;
 
     @FXML
     public void initialize() {
         board = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            Button button = new Button();
-            button.setMaxSize(100, 100);
-            button.setPrefWidth(100);
-            button.setPrefHeight(100);
-            button.setMinHeight(100);
-            button.setMaxHeight(100);
-            board.add(button);
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                for (AudioClip audioClip : mainApp.getSoundBoard().getAudioClips()) {
 
-        grid.getChildren().addAll(board);
+                    board.add(createButton(audioClip));
+                }
+                grid.getChildren().addAll(board);
+
+
+            }
+        });
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/settings.fxml"));
@@ -117,18 +119,29 @@ public class MainController {
 
     }
 
-    public void play() {
-        try {
-            AudioInputStream inputStream = AudioSystem.getAudioInputStream(MainApp.class.getResourceAsStream("audio"));
-            Clip clip = AudioSystem.getClip(mainApp.getSoundBoard().getMixer().getMixerInfo());
-            clip.open(inputStream);
-            clip.start();
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void play(String path) {
+
+        //TODO Play
+    }
+
+    private void stop() {
+
+        //TODO stop
+    }
+
+    public Button createButton(AudioClip audioClip) {
+        Button button = new Button();
+        button.setOnAction(event -> {
+            // Call play()
+        });
+        VBox edit = new VBox();
+        edit.getChildren().addAll(new Button("edit"), new Button("loop"));
+        button.setGraphic(edit);
+        button.setMaxSize(100, 100);
+        button.setPrefWidth(100);
+        button.setPrefHeight(100);
+        button.setMinHeight(100);
+        button.setMaxHeight(100);
+        return button;
     }
 }

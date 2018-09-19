@@ -2,12 +2,11 @@ package mojito_soundboard;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import mojito_soundboard.controller.MainController;
+import mojito_soundboard.model.AudioClip;
 import mojito_soundboard.model.SoundBoard;
 
 public class MainApp extends Application {
@@ -19,6 +18,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         soundBoard = new SoundBoard();
+        test();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/main.fxml"));
         rootLayout = loader.load();
@@ -29,6 +29,14 @@ public class MainApp extends Application {
         primaryStage.setScene(new Scene(rootLayout, 600, 500));
         primaryStage.show();
 
+
+    }
+
+
+    public void test() {
+        for (int i = 0; i < 20; i++) {
+            soundBoard.getAudioClips().add(new AudioClip("test", "D:\\Windows\\Desktop\\piano2.wav", "ALT"));
+        }
     }
 
     public AnchorPane getRootLayout() {

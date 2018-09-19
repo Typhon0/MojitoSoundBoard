@@ -20,7 +20,9 @@ public class SoundBoard {
         return audioClips;
     }
 
-    public SoundBoard(){
+    public SoundBoard() {
+
+        audioClips = new ArrayList<>();
 
     }
 

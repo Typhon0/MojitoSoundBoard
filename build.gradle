@@ -4,6 +4,8 @@ mainClassName = "mojito_soundboard.MainApp"
 
 repositories {
     jcenter()
+    maven { url "https://jitpack.io" }
+
 }
 
 sourceCompatibility=1.8

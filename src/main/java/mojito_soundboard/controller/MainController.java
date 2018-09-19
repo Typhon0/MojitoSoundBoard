@@ -5,6 +5,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +30,9 @@ public class MainController {
     @FXML
     public FlowPane grid;
 
+    /**
+     * Root anchorpane
+     */
     @FXML
     public AnchorPane root;
 
@@ -41,13 +46,30 @@ public class MainController {
      */
     private ArrayList<Button> board;
 
+    /**
+     * List of edit containers
+     */
+    private ArrayList<VBox> editContainers;
 
+    /**
+     * Edit mode boolean property
+     */
+    private BooleanProperty editMode;
+
+    /**
+     * Setting container
+     */
     @FXML
     Parent settings;
 
+    /**
+     * Called when the FXML is loaded
+     */
     @FXML
     public void initialize() {
+        editMode = new SimpleBooleanProperty(false);
         board = new ArrayList<>();
+        editContainers = new ArrayList<>();
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -74,27 +96,22 @@ public class MainController {
         }
     }
 
-    /**
-     * Set the MainApp
-     *
-     * @param mainApp
-     */
-    public void setMainApp(MainApp mainApp) {
-        this.mainApp = mainApp;
-    }
 
     /**
-     * Get the MainApp
+     * Handle the add button event
+     * Add a button to the soundboard grid
      *
-     * @return MainApp
+     * @param actionEvent
      */
-    public MainApp getMainApp() {
-        return mainApp;
-    }
-
     public void addBtn(ActionEvent actionEvent) {
     }
 
+    /**
+     * Handle the settings button event
+     * Open the settings panel
+     *
+     * @param actionEvent
+     */
     public void settingsBtn(ActionEvent actionEvent) {
 
         settings.toFront();
@@ -119,29 +136,114 @@ public class MainController {
 
     }
 
+    /**
+     * Play the audio clip
+     *
+     * @param path
+     */
     public void play(String path) {
 
         //TODO Play
     }
 
+    /**
+     * Stop playing the audio clip
+     */
     private void stop() {
 
         //TODO stop
     }
 
+    /**
+     * Create a soundboard button
+     *
+     * @param audioClip the audio clip linked to the button
+     * @return a Button
+     */
     public Button createButton(AudioClip audioClip) {
         Button button = new Button();
         button.setOnAction(event -> {
             // Call play()
         });
+        //Edit container
         VBox edit = new VBox();
+        edit.setVisible(false);
         edit.getChildren().addAll(new Button("edit"), new Button("loop"));
+        editContainers.add(edit);
         button.setGraphic(edit);
+
+
         button.setMaxSize(100, 100);
         button.setPrefWidth(100);
         button.setPrefHeight(100);
         button.setMinHeight(100);
         button.setMaxHeight(100);
+        button.setCache(true);
         return button;
+    }
+
+    /**
+     * Handle the button event to enable or disable edit mode
+     *
+     * @param actionEvent
+     */
+    public void editBtn(ActionEvent actionEvent) {
+        if (editMode.getValue()) {
+            disableEditMode();
+        } else {
+            enableEditMode();
+        }
+    }
+
+    /**
+     * Enable edit mode
+     */
+    public void enableEditMode() {
+        for (VBox edit_container : editContainers) {
+            edit_container.setVisible(true);
+            setEditMode(true);
+        }
+    }
+
+    /**
+     * Disable edit mode
+     */
+    public void disableEditMode() {
+        for (VBox edit_container : editContainers) {
+            edit_container.setVisible(false);
+            setEditMode(false);
+        }
+    }
+
+    public boolean isEditMode() {
+        return editMode.get();
+    }
+
+    public BooleanProperty editModeProperty() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode.set(editMode);
+
+
+    }
+
+    /**
+     * Set the MainApp
+     *
+     * @param mainApp
+     */
+    public void setMainApp(MainApp mainApp) {
+        this.mainApp = mainApp;
+    }
+
+    /**
+     * Get the MainApp
+     *
+     * @return MainApp
+     */
+    public MainApp getMainApp() {
+        return mainApp;
     }
 }

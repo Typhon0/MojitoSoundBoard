@@ -34,7 +34,7 @@ public class MainApp extends Application {
 
 
     public void test() {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 200; i++) {
             soundBoard.getAudioClips().add(new AudioClip("test", "D:\\Windows\\Desktop\\piano2.wav", "ALT"));
         }
     }

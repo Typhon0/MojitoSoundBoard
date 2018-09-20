@@ -1,7 +1,9 @@
 package mojito_soundboard.controller;
 
+import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
+import com.jfoenix.controls.JFXListView;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -16,16 +18,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import mojito_soundboard.MainApp;
-import mojito_soundboard.model.AudioClip;
-import mojito_soundboard.model.HamburgerBasicCloseTransition;
-import mojito_soundboard.model.InfoDialog;
+import mojito_soundboard.model.*;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -57,6 +59,15 @@ public class MainController {
      */
     @FXML
     JFXHamburger hamburger;
+
+    @FXML
+    StackPane dialogstackpane;
+
+    /**
+     * The drawer list view
+     */
+    @FXML
+    JFXListView<SoundBoard> listview;
 
     /**
      * List of buttons
@@ -90,12 +101,12 @@ public class MainController {
      */
     InfoDialog infoDialog;
 
+
     /**
      * Called when the FXML is loaded
      */
     @FXML
     public void initialize() {
-
         editMode = new SimpleBooleanProperty(false);
         board = new ArrayList<>();
         editContainers = new ArrayList<>();
@@ -103,17 +114,25 @@ public class MainController {
 
         HamburgerBasicCloseTransition burgerTask = new HamburgerBasicCloseTransition(hamburger);
         burgerTask.setRate(-1);
-        hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, (e)->{
-            burgerTask.setRate(burgerTask.getRate()*-1);
+        hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+            burgerTask.setRate(burgerTask.getRate() * -1);
             burgerTask.play();
         });
 
+
         Platform.runLater(() -> {
-            for (AudioClip audioClip : mainApp.getSoundBoard().getAudioClips()) {
+            listview.setItems(mainApp.getSoundBoards());
+            listview.setCellFactory(param -> new SoundBoardCell());
+            listview.setOnMouseClicked(event -> loadSoundboard(listview.getSelectionModel().getSelectedIndex()));
+
+            // Load first soundboard
+            for (AudioClip audioClip : mainApp.getSoundBoards().get(0).getAudioClips()) {
 
                 board.add(createButton(audioClip, 120));
             }
+
             grid.getChildren().addAll(board);
+
         });
 
 
@@ -324,11 +343,43 @@ public class MainController {
         return mainApp;
     }
 
+    /**
+     * Handle click on the hamburger
+     *
+     * @param mouseEvent
+     */
     public void handleHamburger(MouseEvent mouseEvent) {
         if (drawer.isClosed() || drawer.isClosing()) {
             drawer.open();
         } else {
             drawer.close();
         }
+    }
+
+    /**
+     * Load the soundboard and generate buttons
+     *
+     * @param index index of the soundboard
+     */
+    public void loadSoundboard(int index) {
+        // Load first soundboard
+        grid.getChildren().clear();
+        board.clear();
+        for (AudioClip audioClip : mainApp.getSoundBoards().get(index).getAudioClips()) {
+
+            board.add(createButton(audioClip, 120));
+        }
+
+        grid.getChildren().addAll(board);
+        if (editMode.getValue()) {
+            enableEditMode();
+        }
+    }
+
+
+
+    public void handleAddSoundboard(ActionEvent actionEvent) {
+
+        //TODO
     }
 }

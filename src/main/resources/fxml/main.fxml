@@ -3,11 +3,11 @@
 <?import com.jfoenix.controls.JFXDrawer?>
 <?import com.jfoenix.controls.JFXHamburger?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXSlider?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
@@ -16,47 +16,46 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<?import com.jfoenix.controls.JFXSlider?>
 <AnchorPane fx:id="root" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mojito_soundboard.controller.MainController">
     <children>
-
+<StackPane fx:id="dialogstackpane" prefHeight="500.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
         <BorderPane prefHeight="500.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <bottom>
 
 
                 <StackPane BorderPane.alignment="CENTER">
                     <children>
-                  <HBox alignment="CENTER_LEFT" prefWidth="200.0">
-                     <children>
-                        <HBox alignment="CENTER">
-                           <children>
-                              <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#settingsBtn" styleClass="controlButton">
-                                 <graphic>
-                                    <FontIcon iconLiteral="ion4-ios-settings" iconSize="32" />
-                                 </graphic>
-                              </Button>
-                           </children>
+                        <HBox alignment="CENTER_LEFT" prefWidth="200.0">
+                            <children>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#settingsBtn" styleClass="controlButton">
+                                            <graphic>
+                                                <FontIcon iconLiteral="ion4-ios-settings" iconSize="32" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                    <HBox.margin>
+                                        <Insets left="50.0" right="50.0" />
+                                    </HBox.margin>
+                                    <children>
+                                        <JFXSlider maxWidth="100.0" minWidth="200.0" prefHeight="7.0" prefWidth="200.0" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <JFXToggleButton contentDisplay="RIGHT" mnemonicParsing="false" onAction="#editBtn" style="-jfx-toggle-color: #757575" text="Edit mode" />
+                                        <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#addBtn" styleClass="controlButton">
+                                            <graphic>
+                                                <FontIcon iconLiteral="ion4-ios-add" iconSize="48" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets left="50.0" right="50.0" />
-                           </HBox.margin>
-                           <children>
-                              <JFXSlider maxWidth="100.0" minWidth="200.0" prefHeight="7.0" prefWidth="200.0" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-                           <children>
-                              <JFXToggleButton contentDisplay="RIGHT" mnemonicParsing="false" onAction="#editBtn" style="-jfx-toggle-color: #757575" text="Edit mode" />
-                              <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#addBtn" styleClass="controlButton">
-                                 <graphic>
-                                    <FontIcon iconLiteral="ion4-ios-add" iconSize="48" />
-                                 </graphic>
-                              </Button>
-                           </children>
-                        </HBox>
-                     </children>
-                  </HBox>
 
 
                     </children>
@@ -90,14 +89,14 @@
                     </content>
                     <sidePane>
                         <VBox alignment="BOTTOM_CENTER">
-                            <JFXListView styleClass="custom-jfx-list-view">
-                            </JFXListView>
+                            <JFXListView fx:id="listview" styleClass="custom-jfx-list-view" VBox.vgrow="ALWAYS" />
                             <HBox alignment="BOTTOM_RIGHT">
-                                <Button styleClass="controlButton">
+                                <Button onAction="#handleAddSoundboard" styleClass="controlButton">
                                     <graphic>
                                         <FontIcon iconLiteral="ion4-ios-add" iconSize="48" />
                                     </graphic>
                                 </Button>
+
                             </HBox>
                         </VBox>
                     </sidePane>

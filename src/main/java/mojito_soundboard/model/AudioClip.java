@@ -94,4 +94,13 @@ public class AudioClip {
     public void setShortcut(String shortcut) {
         this.shortcut = shortcut;
     }
+
+    @Override
+    public String toString() {
+        return "AudioClip{" +
+                "name='" + name + '\'' +
+                ", file=" + file +
+                ", shortcut='" + shortcut + '\'' +
+                '}';
+    }
 }

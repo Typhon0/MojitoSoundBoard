@@ -1,6 +1,8 @@
 package mojito_soundboard;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 
 public class MainApp extends Application {
 
-    private SoundBoard soundBoard;
+    private ObservableList<SoundBoard> soundBoards;
 
     private AnchorPane rootLayout;
 
@@ -23,7 +25,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        soundBoard = new SoundBoard();
+        soundBoards = FXCollections.observableArrayList();
         test();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/main.fxml"));
@@ -41,9 +43,18 @@ public class MainApp extends Application {
 
 
     public void test() {
+        SoundBoard soundBoard = new SoundBoard("Soundboard 1");
         for (int i = 0; i < 200; i++) {
-            soundBoard.getAudioClips().add(new AudioClip("test", new File("D:\\Windows\\Desktop\\piano2.wav"), "ALT"));
+            soundBoard.getAudioClips().add(new AudioClip("test 1", new File("D:\\Windows\\Desktop\\piano2.wav"), "ALT"));
         }
+
+        SoundBoard soundBoard2 = new SoundBoard("Soundboard 2");
+        for (int i = 0; i < 200; i++) {
+            soundBoard2.getAudioClips().add(new AudioClip("test 2", new File("D:\\Windows\\Desktop\\piano2.wav"), "ALT"));
+        }
+
+        soundBoards.add(soundBoard);
+        soundBoards.add(soundBoard2);
     }
 
     public AnchorPane getRootLayout() {
@@ -54,8 +65,8 @@ public class MainApp extends Application {
         launch(args);
     }
 
-    public SoundBoard getSoundBoard() {
-        return soundBoard;
+    public ObservableList<SoundBoard> getSoundBoards() {
+        return soundBoards;
     }
 
     public Stage getPrimaryStage() {

@@ -10,6 +10,7 @@ import mojito_soundboard.model.AudioClip;
 import mojito_soundboard.model.SoundBoard;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MainApp extends Application {
 
@@ -32,6 +33,7 @@ public class MainApp extends Application {
         this.rootLayout.getStylesheets().add(getClass().getResource("/stylesheet/style.css").toExternalForm());
         this.primaryStage.setTitle("Mojito SoundBoard");
         this.primaryStage.setScene(new Scene(rootLayout, 600, 500));
+        this.primaryStage.setMinWidth(600);
         this.primaryStage.show();
 
 

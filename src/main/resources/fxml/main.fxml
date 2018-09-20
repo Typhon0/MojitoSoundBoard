@@ -42,12 +42,16 @@
             </StackPane>
          </bottom>
          <center>
-            <ScrollPane fitToHeight="true" fitToWidth="true">
+            <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
                <BorderPane.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets />
                </BorderPane.margin>
                <content>
-                  <FlowPane fx:id="grid" hgap="10.0" prefHeight="200.0" prefWidth="200.0" rowValignment="TOP" vgap="10.0" />
+                  <FlowPane fx:id="grid" alignment="CENTER" columnHalignment="CENTER" hgap="10.0" prefHeight="200.0" prefWidth="200.0" vgap="10.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+
+                     </padding></FlowPane>
                </content>
             </ScrollPane>
          </center>

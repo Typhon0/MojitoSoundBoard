@@ -1,5 +1,7 @@
 package mojito_soundboard.model;
 
+import java.io.File;
+
 /**
  * @author Loïc Sculier aka typhon0
  */
@@ -12,20 +14,20 @@ public class AudioClip {
     /**
      * Path to the audio file
      */
-    private String path;
+    private File file;
     /**
-     * Keyboard shortcut
+     * Keyboard shortcutx
      */
     private String shortcut;
 
-    public AudioClip(String name, String path) {
+    public AudioClip(String name, File file) {
         this.name = name;
-        this.path = path;
+        this.file = file;
     }
 
-    public AudioClip(String name, String path, String shortcut) {
+    public AudioClip(String name, File file, String shortcut) {
         this.name = name;
-        this.path = path;
+        this.file = file;
         this.shortcut = shortcut;
     }
 
@@ -39,12 +41,21 @@ public class AudioClip {
     }
 
     /**
-     * Get the path of the audio clip
+     * Get the file of the audio clip
+     *
+     * @return
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * Get the file path
      *
      * @return
      */
     public String getPath() {
-        return path;
+        return file.getPath();
     }
 
     /**
@@ -56,6 +67,7 @@ public class AudioClip {
         return name;
     }
 
+
     /**
      * Set the name of the audio clip
      *
@@ -66,12 +78,12 @@ public class AudioClip {
     }
 
     /**
-     * Set the audio file path
+     * Set the audio file file
      *
-     * @param path
+     * @param file
      */
-    public void setPath(String path) {
-        this.path = path;
+    public void setFile(File file) {
+        this.file = file;
     }
 
     /**

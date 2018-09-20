@@ -32,7 +32,7 @@ public class MainApp extends Application {
         rootLayout = loader.load();
         MainController mainController = loader.getController();
         mainController.setMainApp(this);
-        this.rootLayout.getStylesheets().add(getClass().getResource("/stylesheet/style.css").toExternalForm());
+        //this.rootLayout.getStylesheets().add(getClass().getResource("/stylesheet/style.css").toExternalForm());
         this.primaryStage.setTitle("Mojito SoundBoard");
         this.primaryStage.setScene(new Scene(rootLayout, 600, 500));
         this.primaryStage.setMinWidth(600);

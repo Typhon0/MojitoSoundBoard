@@ -1,9 +1,9 @@
 package mojito_soundboard.controller;
 
-import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXScrollPane;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -18,7 +18,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -101,6 +101,9 @@ public class MainController {
      */
     InfoDialog infoDialog;
 
+    @FXML
+    ScrollPane scrollpane;
+
 
     /**
      * Called when the FXML is loaded
@@ -112,6 +115,9 @@ public class MainController {
         editContainers = new ArrayList<>();
         infoDialog = new InfoDialog();
 
+        JFXScrollPane.smoothScrolling(scrollpane);
+
+        //Hamburger initialization
         HamburgerBasicCloseTransition burgerTask = new HamburgerBasicCloseTransition(hamburger);
         burgerTask.setRate(-1);
         hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
@@ -127,15 +133,18 @@ public class MainController {
 
             // Load first soundboard
             for (AudioClip audioClip : mainApp.getSoundBoards().get(0).getAudioClips()) {
-
                 board.add(createButton(audioClip, 120));
             }
-
             grid.getChildren().addAll(board);
 
         });
 
+        loadSettings();
 
+    }
+
+
+    public void loadSettings() {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/settings.fxml"));
@@ -149,7 +158,6 @@ public class MainController {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Handle the add button event
@@ -236,8 +244,6 @@ public class MainController {
             File audiofile = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
             if (audiofile != null) {
                 audioClip.setFile(audiofile);
-            } else {
-                audiofile = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
             }
 
         });
@@ -290,6 +296,7 @@ public class MainController {
             enableEditMode();
         }
     }
+
 
     /**
      * Enable edit mode
@@ -375,7 +382,6 @@ public class MainController {
             enableEditMode();
         }
     }
-
 
 
     public void handleAddSoundboard(ActionEvent actionEvent) {

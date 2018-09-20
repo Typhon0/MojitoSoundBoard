@@ -1,11 +1,11 @@
 package mojito_soundboard.model;
 
-import javafx.scene.control.ListCell;
+import com.jfoenix.controls.JFXListCell;
 
 /**
  * @author Loïc Sculier aka typhon0
  */
-public class SoundBoardCell extends ListCell<SoundBoard> {
+public class SoundBoardCell extends JFXListCell<SoundBoard> {
 
     @Override
     protected void updateItem(SoundBoard item, boolean empty) {

@@ -1,9 +1,6 @@
 package mojito_soundboard.controller;
 
-import com.jfoenix.controls.JFXDrawer;
-import com.jfoenix.controls.JFXHamburger;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXScrollPane;
+import com.jfoenix.controls.*;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -11,6 +8,8 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,12 +17,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import mojito_soundboard.MainApp;
@@ -72,7 +69,7 @@ public class MainController {
     /**
      * List of buttons
      */
-    private ArrayList<Button> board;
+    private ObservableList<Button> board;
 
     /**
      * List of edit containers
@@ -94,15 +91,18 @@ public class MainController {
      * Setting container
      */
     @FXML
-    Parent settings;
+    public Parent settings;
 
     /**
      * Information dialog about the file
      */
-    InfoDialog infoDialog;
+    private InfoDialog infoDialog;
 
     @FXML
     ScrollPane scrollpane;
+
+    private JFXDialog addSoundboardDialog;
+    private JFXDialog addAudioDialog;
 
 
     /**
@@ -111,7 +111,7 @@ public class MainController {
     @FXML
     public void initialize() {
         editMode = new SimpleBooleanProperty(false);
-        board = new ArrayList<>();
+        board = FXCollections.observableArrayList();
         editContainers = new ArrayList<>();
         infoDialog = new InfoDialog();
 
@@ -129,7 +129,7 @@ public class MainController {
         Platform.runLater(() -> {
             listview.setItems(mainApp.getSoundBoards());
             listview.setCellFactory(param -> new SoundBoardCell());
-            listview.setOnMouseClicked(event -> loadSoundboard(listview.getSelectionModel().getSelectedIndex()));
+            listview.getSelectionModel().selectedIndexProperty().addListener(event -> loadSoundboard(listview.getSelectionModel().getSelectedIndex()));
 
             // Load first soundboard
             for (AudioClip audioClip : mainApp.getSoundBoards().get(0).getAudioClips()) {
@@ -159,14 +159,6 @@ public class MainController {
         }
     }
 
-    /**
-     * Handle the add button event
-     * Add a button to the soundboard grid
-     *
-     * @param actionEvent
-     */
-    public void addBtn(ActionEvent actionEvent) {
-    }
 
     /**
      * Handle the settings button event
@@ -215,6 +207,7 @@ public class MainController {
 
         //TODO stop
     }
+
 
     /**
      * Create a soundboard button
@@ -383,9 +376,96 @@ public class MainController {
         }
     }
 
+    /**
+     * Handle the add button event
+     * Add a button to the soundboard grid
+     *
+     * @param actionEvent
+     */
+    public void addBtn(ActionEvent actionEvent) {
 
+        JFXDialogLayout content = new JFXDialogLayout();
+        GridPane grid = new GridPane();
+
+
+        JFXTextField name = new JFXTextField();
+        JFXTextField file = new JFXTextField();
+        JFXTextField shortcut = new JFXTextField();
+        name.setPromptText("Name");
+        file.setPromptText("File");
+        file.setOnMouseClicked(event -> {
+            FileChooser fileChooser = new FileChooser();
+            file.setText(fileChooser.showOpenDialog(mainApp.getPrimaryStage()).getPath());
+        });
+        shortcut.setPromptText("Shortcut");
+        grid.add(new Label("Audio clip name:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.add(new Label("Soundboard name:"), 0, 1);
+        grid.add(file, 1, 1);
+        grid.add(new Label("Shortcut:"), 0, 2);
+        grid.add(shortcut, 1, 2);
+        grid.setHgap(10);
+        content.setBody(grid);
+        JFXButton ok = new JFXButton("Ok");
+        ok.setOnAction(event -> {
+            addAudioClip(name.getText(), file.getText(), shortcut.getText());
+        });
+        content.setActions(ok);
+
+        addAudioDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
+
+
+        addAudioDialog.show();
+        dialogstackpane.toFront();
+        addAudioDialog.setOnDialogClosed(event -> {
+            dialogstackpane.toBack();
+        });
+
+    }
+
+    /**
+     * Handle the add soundboard button
+     *
+     * @param actionEvent
+     */
     public void handleAddSoundboard(ActionEvent actionEvent) {
 
+        JFXDialogLayout content = new JFXDialogLayout();
+        GridPane grid = new GridPane();
+
+
+        JFXTextField name = new JFXTextField();
+        name.setPromptText("Name");
+        grid.add(new Label("Soundboard name:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.setHgap(10);
+        content.setBody(grid);
+        JFXButton ok = new JFXButton("Ok");
+        ok.setOnAction(event -> {
+            addSoundBoard(name.getText());
+        });
+        content.setActions(ok);
+
+        addSoundboardDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
+
+
+        addSoundboardDialog.show();
+        dialogstackpane.toFront();
+        addSoundboardDialog.setOnDialogClosed(event -> {
+            dialogstackpane.toBack();
+        });
+    }
+
+    private void addSoundBoard(String soundboard_name) {
+        if (!soundboard_name.isEmpty()) {
+            addSoundboardDialog.close();
+            mainApp.getSoundBoards().add(new SoundBoard(soundboard_name));
+            listview.getSelectionModel().selectLast();
+
+        }
+    }
+
+    private void addAudioClip(String name, String file, String shortcut) {
         //TODO
     }
 }

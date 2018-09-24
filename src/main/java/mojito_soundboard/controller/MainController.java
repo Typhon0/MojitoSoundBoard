@@ -104,6 +104,10 @@ public class MainController {
     private JFXDialog addSoundboardDialog;
     private JFXDialog addAudioDialog;
 
+    /**
+     * Save current index of the selected soundboard
+     */
+    private int currentSoundboardIndex;
 
     /**
      * Called when the FXML is loaded
@@ -129,13 +133,14 @@ public class MainController {
         Platform.runLater(() -> {
             listview.setItems(mainApp.getSoundBoards());
             listview.setCellFactory(param -> new SoundBoardCell());
-            listview.getSelectionModel().selectedIndexProperty().addListener(event -> loadSoundboard(listview.getSelectionModel().getSelectedIndex()));
+            listview.getSelectionModel().selectedIndexProperty().addListener(event -> {
+                loadSoundboard(listview.getSelectionModel().getSelectedIndex());
+                currentSoundboardIndex = listview.getSelectionModel().getSelectedIndex();
+            });
 
-            // Load first soundboard
-            for (AudioClip audioClip : mainApp.getSoundBoards().get(0).getAudioClips()) {
-                board.add(createButton(audioClip, 120));
-            }
-            grid.getChildren().addAll(board);
+
+            loadSoundboard(0);
+
 
         });
 
@@ -466,6 +471,19 @@ public class MainController {
     }
 
     private void addAudioClip(String name, String file, String shortcut) {
-        //TODO
+        System.out.println("Name " + name + " file " + file + " shortcut " + shortcut);
+        if (! (name.isEmpty() || file.isEmpty())) {
+            AudioClip audioClip;
+            if (shortcut.length() > 0) {
+                audioClip = new AudioClip(name, new File(file), shortcut);
+
+            } else {
+                audioClip = new AudioClip(name, new File(file));
+
+            }
+            mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().add(audioClip);
+            loadSoundboard(currentSoundboardIndex);
+            addAudioDialog.close();
+        }
     }
 }

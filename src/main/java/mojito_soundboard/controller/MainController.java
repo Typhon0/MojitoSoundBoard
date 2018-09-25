@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import mojito_soundboard.MainApp;
 import mojito_soundboard.model.*;
+import mojito_soundboard.util.DBHelper;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -413,7 +414,7 @@ public class MainController {
         content.setBody(grid);
         JFXButton ok = new JFXButton("Ok");
         ok.setOnAction(event -> {
-            addAudioClip(name.getText(), file.getText(), shortcut.getText());
+            addAudioClip(name.getText(), new File(file.getText()), shortcut.getText());
         });
         content.setActions(ok);
 
@@ -466,23 +467,23 @@ public class MainController {
             addSoundboardDialog.close();
             mainApp.getSoundBoards().add(new SoundBoard(soundboard_name));
             listview.getSelectionModel().selectLast();
-
+            DBHelper.addSounboard(soundboard_name);
         }
     }
 
-    private void addAudioClip(String name, String file, String shortcut) {
-        System.out.println("Name " + name + " file " + file + " shortcut " + shortcut);
-        if (! (name.isEmpty() || file.isEmpty())) {
+    private void addAudioClip(String name, File file, String shortcut) {
+        if (!name.isEmpty() && file.isFile()) {
             AudioClip audioClip;
             if (shortcut.length() > 0) {
-                audioClip = new AudioClip(name, new File(file), shortcut);
+                audioClip = new AudioClip(name, file, shortcut);
 
             } else {
-                audioClip = new AudioClip(name, new File(file));
+                audioClip = new AudioClip(name, file);
 
             }
             mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().add(audioClip);
             loadSoundboard(currentSoundboardIndex);
+            DBHelper.addAudioClip(currentSoundboardIndex, name, file, shortcut);
             addAudioDialog.close();
         }
     }

@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import mojito_soundboard.controller.MainController;
 import mojito_soundboard.model.AudioClip;
 import mojito_soundboard.model.SoundBoard;
+import mojito_soundboard.util.DBHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,13 +27,13 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         soundBoards = FXCollections.observableArrayList();
-        test();
+        DBHelper.initDB(System.getProperty("user.dir"));
+        soundBoards.setAll(DBHelper.loadSoundboards());
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/main.fxml"));
         rootLayout = loader.load();
         MainController mainController = loader.getController();
         mainController.setMainApp(this);
-        //this.rootLayout.getStylesheets().add(getClass().getResource("/stylesheet/style.css").toExternalForm());
         this.primaryStage.setTitle("Mojito SoundBoard");
         this.primaryStage.setScene(new Scene(rootLayout, 600, 500));
         this.primaryStage.setMinWidth(600);

@@ -8,6 +8,11 @@ import java.io.File;
 public class AudioClip {
 
     /**
+     * Audioclip id
+     */
+    private int id;
+
+    /**
      * Name of the audio clip
      */
     private String name;
@@ -26,6 +31,13 @@ public class AudioClip {
     }
 
     public AudioClip(String name, File file, String shortcut) {
+        this.name = name;
+        this.file = file;
+        this.shortcut = shortcut;
+    }
+
+    public AudioClip(int id, String name, File file, String shortcut) {
+        this.id = id;
         this.name = name;
         this.file = file;
         this.shortcut = shortcut;

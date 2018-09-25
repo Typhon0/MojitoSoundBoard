@@ -401,7 +401,12 @@ public class MainController {
         file.setPromptText("File");
         file.setOnMouseClicked(event -> {
             FileChooser fileChooser = new FileChooser();
-            file.setText(fileChooser.showOpenDialog(mainApp.getPrimaryStage()).getPath());
+            File audiofile = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
+            if (audiofile != null) {
+                file.setText(audiofile.getPath());
+            }
+
+
         });
         shortcut.setPromptText("Shortcut");
         grid.add(new Label("Audio clip name:"), 0, 0);

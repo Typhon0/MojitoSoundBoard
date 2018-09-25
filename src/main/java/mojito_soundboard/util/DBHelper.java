@@ -31,7 +31,8 @@ public class DBHelper {
 
             System.out.println("Opened database successfully");
 
-            statement = connection.createStatement()
+            statement = connection.createStatement();
+
             String sql = "CREATE TABLE IF NOT EXISTS `Soundboard` " +
                     "(`id`	INTEGER NOT NULL," +
                     "`name`	TEXT NOT NULL," +
@@ -80,6 +81,7 @@ public class DBHelper {
 
     /**
      * Get the database connection
+     *
      * @return database
      * @throws ClassNotFoundException
      * @throws SQLException
@@ -103,23 +105,23 @@ public class DBHelper {
         ArrayList<SoundBoard> soundBoards = new ArrayList<>();
         Connection c = null;
 
-        try (Statement stm = c.createStatement(); ResultSet rs = stm.executeQuery("SELECT * FROM Soundboard")) {
+        try {
             c = getConnection();
-
+            Statement stm = c.createStatement();
             int currentSoudnboard = 0;
-
+            ResultSet rs = stm.executeQuery("SELECT * FROM Soundboard");
 
             while (rs.next()) { // Pour chaque soundboard
                 SoundBoard soundBoard;
                 ResultSet rsp;
-                try (PreparedStatement preparedStatement = c.prepareStatement("SELECT * FROM AudioClipSoundboard WHERE idSoundboard = ?")) {
-                    c.commit();
-                    currentSoudnboard = rs.getInt(1);
-                    soundBoard = new SoundBoard(currentSoudnboard, rs.getString(2), rs.getString(3));
+                PreparedStatement preparedStatement = c.prepareStatement("SELECT * FROM AudioClipSoundboard WHERE idSoundboard = ?");
+                c.commit();
+                currentSoudnboard = rs.getInt(1);
+                soundBoard = new SoundBoard(currentSoudnboard, rs.getString(2), rs.getString(3));
 
-                    preparedStatement.setInt(1, currentSoudnboard);
-                    rsp = preparedStatement.executeQuery();
-                }
+                preparedStatement.setInt(1, currentSoudnboard);
+                rsp = preparedStatement.executeQuery();
+
                 while (rsp.next()) {
                     soundBoard.getAudioClips().add(getAudioClipbyID(rsp.getInt(1)));
                     c.commit();
@@ -151,20 +153,16 @@ public class DBHelper {
 
         Connection c = null;
 
-        try (PreparedStatement preparedStatement = c.prepareStatement("SELECT * FROM AudioClip WHERE id = ?")) {
+        try {
             c = getConnection();
+            PreparedStatement preparedStatement = c.prepareStatement("SELECT * FROM AudioClip WHERE id = ?");
             preparedStatement.setInt(1, id);
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
                     return new AudioClip(rs.getInt(1), rs.getString(2), new File(rs.getString(3)), rs.getString(4));
                 }
             }
-        } catch (SQLiteException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -185,9 +183,10 @@ public class DBHelper {
     public static boolean addSounboard(String name) {
         Connection c = null;
 
-        try (PreparedStatement statement = c.prepareStatement(
-                "INSERT INTO Soundboard (id,name) VALUES (?,?)")) {
+        try {
             c = DBHelper.getConnection();
+            PreparedStatement statement = c.prepareStatement(
+                    "INSERT INTO Soundboard (id,name) VALUES (?,?)");
 
             statement.setNull(1, 0);
             statement.setString(2, name);
@@ -202,7 +201,9 @@ public class DBHelper {
             e.printStackTrace();
         } finally {
             try {
-                c.close();
+                if (c != null) {
+                    c.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -223,13 +224,12 @@ public class DBHelper {
     public static boolean addAudioClip(int currentSoundboardID, String name, File file, String shortcut) {
         Connection c = null;
 
-        try (PreparedStatement statement = c.prepareStatement(
-                "INSERT INTO AudioClip (id,name,path,shortcut)" +
-                        "VALUES (?,?,?,?)"
-                , Statement.RETURN_GENERATED_KEYS)) {
-
-
+        try {
             c = DBHelper.getConnection();
+            PreparedStatement statement = c.prepareStatement(
+                    "INSERT INTO AudioClip (id,name,path,shortcut)" +
+                            "VALUES (?,?,?,?)"
+                    , Statement.RETURN_GENERATED_KEYS);
 
             statement.setNull(1, 0);
             statement.setString(2, name);
@@ -250,7 +250,9 @@ public class DBHelper {
             e.printStackTrace();
         } finally {
             try {
-                c.close();
+                if (c != null) {
+                    c.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -270,10 +272,12 @@ public class DBHelper {
     private static boolean insertAudioClipSoundboard(int idSoundboard, int idAudioClip) {
         Connection c = null;
 
-        try (PreparedStatement statement = c.prepareStatement(
-                "INSERT INTO AudioClipSoundboard (idSoundboard, idAudioClip)" +
-                        "VALUES (?,?)")) {
+        try {
             c = DBHelper.getConnection();
+
+            PreparedStatement statement = c.prepareStatement(
+                    "INSERT INTO AudioClipSoundboard (idSoundboard, idAudioClip)" +
+                            "VALUES (?,?)");
 
             statement.setInt(1, idSoundboard + 1);
             statement.setInt(2, idAudioClip);

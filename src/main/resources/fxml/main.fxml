@@ -35,8 +35,8 @@
                                         <Insets left="50.0" right="50.0"/>
                                     </HBox.margin>
                                     <children>
-                                        <JFXSlider maxWidth="100.0" minWidth="200.0" prefHeight="7.0"
-                                                   prefWidth="200.0"/>
+                                        <JFXSlider fx:id="volumeSlider" maxWidth="100.0" minWidth="200.0" prefHeight="7.0"
+                                                   prefWidth="200.0" />
                                     </children>
                                 </HBox>
                                 <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">

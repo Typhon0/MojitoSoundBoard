@@ -123,7 +123,7 @@ public class DBHelper {
                 rsp = preparedStatement.executeQuery();
 
                 while (rsp.next()) {
-                    soundBoard.getAudioClips().add(getAudioClipbyID(rsp.getInt(1)));
+                    soundBoard.getAudioClips().add(getAudioClipbyID(rsp.getInt(2)));
                     c.commit();
                 }
                 soundBoards.add(soundBoard);
@@ -139,7 +139,6 @@ public class DBHelper {
                 e.printStackTrace();
             }
         }
-
         return soundBoards;
     }
 

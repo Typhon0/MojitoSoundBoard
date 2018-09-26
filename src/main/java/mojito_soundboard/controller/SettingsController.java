@@ -31,6 +31,8 @@ public class SettingsController {
 
     private MainApp mainApp;
 
+    private final String MIXER_KEY = "MIXER";
+
     public SettingsController() {
 
     }
@@ -42,6 +44,13 @@ public class SettingsController {
             Mixer.Info info = mixerInfo[i];
             audioDeviceList.getItems().add(info.getName());
         }
+
+        Platform.runLater(() -> {
+            audioDeviceList.valueProperty().addListener((observable, oldValue, newValue) -> {
+                mainApp.getPreferences().put(MIXER_KEY, newValue);
+                mainApp.getStreamPlayer().setMixerName(newValue);
+            });
+        });
     }
 
 

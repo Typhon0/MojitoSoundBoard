@@ -1,6 +1,7 @@
 package mojito_soundboard;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -11,9 +12,11 @@ import mojito_soundboard.controller.MainController;
 import mojito_soundboard.model.AudioClip;
 import mojito_soundboard.model.SoundBoard;
 import mojito_soundboard.util.DBHelper;
+import mojito_soundboard.util.stream.StreamPlayer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 public class MainApp extends Application {
 
@@ -23,8 +26,14 @@ public class MainApp extends Application {
 
     private Stage primaryStage;
 
+    private StreamPlayer streamPlayer;
+
+    private Preferences preferences;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
+        preferences = Preferences.userRoot().node(this.getClass().getName());
+        streamPlayer = new StreamPlayer();
         this.primaryStage = primaryStage;
         soundBoards = FXCollections.observableArrayList();
         DBHelper.initDB(System.getProperty("user.dir"));
@@ -42,22 +51,6 @@ public class MainApp extends Application {
 
     }
 
-
-    public void test() {
-        SoundBoard soundBoard = new SoundBoard("Soundboard 1");
-        for (int i = 0; i < 200; i++) {
-            soundBoard.getAudioClips().add(new AudioClip("test 1", new File("D:\\Windows\\Desktop\\piano2.wav"), "ALT"));
-        }
-
-        SoundBoard soundBoard2 = new SoundBoard("Soundboard 2");
-        for (int i = 0; i < 200; i++) {
-            soundBoard2.getAudioClips().add(new AudioClip("test 2", new File("D:\\Windows\\Desktop\\piano2.wav"), "ALT"));
-        }
-
-        soundBoards.add(soundBoard);
-        soundBoards.add(soundBoard2);
-    }
-
     public AnchorPane getRootLayout() {
         return rootLayout;
     }
@@ -72,5 +65,19 @@ public class MainApp extends Application {
 
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public StreamPlayer getStreamPlayer() {
+        return streamPlayer;
+    }
+
+    public Preferences getPreferences() {
+        return preferences;
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+
     }
 }

@@ -2,12 +2,9 @@ package mojito_soundboard.model;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.util.Duration;
 import mojito_soundboard.MainApp;
 import mojito_soundboard.controller.MainController;
-import mojito_soundboard.util.SupportedAudio;
 import mojito_soundboard.util.stream.StreamPlayerException;
-import sun.applet.Main;
 
 import java.io.File;
 
@@ -76,7 +73,6 @@ public class PlayService extends Service<Boolean> {
 
                     //Open the audio
                     updateMessage("Opening ...");
-                    System.out.println(currentAudioClip);
                     mainApp.getStreamPlayer().open(currentAudioClip);
 
                     // ----------------------- Play the Audio

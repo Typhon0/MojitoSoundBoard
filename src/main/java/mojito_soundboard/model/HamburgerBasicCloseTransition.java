@@ -29,10 +29,11 @@ import javafx.util.Duration;
 
 /**
  * transform {@link JFXHamburger} into close icon
- *
+ * Updated close icon design
  * @author Shadi Shaheen
+ * @author Loïc Sculier
  * @version 1.1
- * @since 2016-03-09
+ * @since 2018-03-09
  */
 public class HamburgerBasicCloseTransition extends CachedTransition implements HamburgerTransition {
 

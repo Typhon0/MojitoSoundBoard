@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import mojito_soundboard.controller.MainController;
 import mojito_soundboard.util.DBHelper;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -14,6 +15,12 @@ import org.kordamp.ikonli.javafx.FontIcon;
  * @author Loïc Sculier aka typhon0
  */
 public class SoundBoardCell extends JFXListCell<SoundBoard> {
+
+    MainController mainController;
+
+    public SoundBoardCell(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     @Override
     protected void updateItem(SoundBoard item, boolean empty) {
@@ -35,11 +42,17 @@ public class SoundBoardCell extends JFXListCell<SoundBoard> {
         Label name = new Label(item.getName());
         Button del = new Button();
         del.setOnAction(event -> {
+            mainController.getMainApp().getSoundBoards().remove(item.getId() - 1);
             getListView().getItems().remove(item);
+            mainController.grid.getChildren().clear();
+            DBHelper.deleteSoundboard(item);
         });
         StackPane.setAlignment(name, Pos.CENTER_LEFT);
         StackPane.setAlignment(del, Pos.CENTER_RIGHT);
-        del.setGraphic(new FontIcon(Ionicons4IOS.CLOSE));
+        FontIcon delGraphic = new FontIcon(Ionicons4IOS.REMOVE_CIRCLE);
+        delGraphic.setIconSize(24);
+        del.setGraphic(delGraphic);
+        del.getStyleClass().add("controlButton");
 
         stackPane.getChildren().addAll(name, del);
 

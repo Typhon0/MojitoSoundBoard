@@ -60,7 +60,7 @@ public class StreamPlayerEvent {
      * Returns the Player Status
      *
      * @return The player Status (paused,playing,...)
-     * @see main.java.goxr3plus.javastreamplayer.stream.Status
+
      */
     public Status getPlayerStatus() {
 	return playerStatus;

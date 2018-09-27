@@ -8,7 +8,8 @@ import java.io.File;
 public class AudioClip {
 
     /**
-     * Audioclip id
+     * Database audio clip id
+     * need to subtract 1 for the ArrayList index
      */
     private int id;
 
@@ -21,9 +22,30 @@ public class AudioClip {
      */
     private File file;
     /**
-     * Keyboard shortcutx
+     * Keyboard shortcut
      */
     private String shortcut;
+
+    /**
+     * Database Soundboard id
+     * need to subtract 1 for the ArrayList index
+     */
+    private int idSoundboard;
+
+    public AudioClip(int id, String name, File file, String shortcut, int idSoundboard) {
+        this.id = id;
+        this.idSoundboard = idSoundboard;
+        this.name = name;
+        this.file = file;
+        this.shortcut = shortcut;
+    }
+
+    public AudioClip(int id, String name, File file, int idSoundboard) {
+        this.id = id;
+        this.idSoundboard = idSoundboard;
+        this.name = name;
+        this.file = file;
+    }
 
     public AudioClip(String name, File file) {
         this.name = name;
@@ -31,13 +53,7 @@ public class AudioClip {
     }
 
     public AudioClip(String name, File file, String shortcut) {
-        this.name = name;
-        this.file = file;
-        this.shortcut = shortcut;
-    }
 
-    public AudioClip(int id, String name, File file, String shortcut) {
-        this.id = id;
         this.name = name;
         this.file = file;
         this.shortcut = shortcut;
@@ -114,5 +130,22 @@ public class AudioClip {
                 ", file=" + file +
                 ", shortcut='" + shortcut + '\'' +
                 '}';
+    }
+
+    /**
+     * Get the database ID of the audio clip
+     * @return the database audio clip ID
+     */
+    public int getId() {
+        return id;
+    }
+
+
+    /**
+     * Get the database ID of the soundboard of the audio clip
+     * @return the database soundboard ID of the audio clip
+     */
+    public int getIdSoundboard() {
+        return idSoundboard;
     }
 }

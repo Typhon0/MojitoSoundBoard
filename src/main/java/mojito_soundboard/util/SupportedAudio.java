@@ -24,7 +24,7 @@ public enum SupportedAudio {
     }
 
     /**
-     * Returns the extension of file(without (.)) for example <b>(ai.mp3)->(mp3)</b> and to lowercase (Mp3 -> mp3)
+     * Returns the extension of file(without (.)) for example (ai.mp3) to (mp3)  and to lowercase (Mp3 to mp3)
      *
      * @param absolutePath The File absolute path
      * @return the File extension

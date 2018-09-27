@@ -1,7 +1,6 @@
 package mojito_soundboard;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -9,13 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import mojito_soundboard.controller.MainController;
-import mojito_soundboard.model.AudioClip;
 import mojito_soundboard.model.SoundBoard;
 import mojito_soundboard.util.DBHelper;
 import mojito_soundboard.util.stream.StreamPlayer;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
 public class MainApp extends Application {

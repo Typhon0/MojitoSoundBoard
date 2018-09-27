@@ -8,14 +8,13 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -33,6 +32,7 @@ import mojito_soundboard.util.stream.StreamPlayerEvent;
 import mojito_soundboard.util.stream.StreamPlayerException;
 import mojito_soundboard.util.stream.StreamPlayerListener;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
+import org.kordamp.ikonli.ionicons4.Ionicons4Material;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
@@ -104,16 +104,13 @@ public class MainController implements StreamPlayerListener {
     @FXML
     public Parent settings;
 
-    /**
-     * Information dialog about the file
-     */
-    private InfoDialog infoDialog;
-
     @FXML
     ScrollPane scrollpane;
 
-    private JFXDialog addSoundboardDialog;
-    private JFXDialog addAudioDialog;
+    /**
+     * JFX dialog
+     */
+    private JFXDialog jfxDialog;
 
     /**
      * Save current index of the selected soundboard
@@ -133,7 +130,6 @@ public class MainController implements StreamPlayerListener {
         editMode = new SimpleBooleanProperty(false);
         board = FXCollections.observableArrayList();
         editContainers = new ArrayList<>();
-        infoDialog = new InfoDialog();
 
         JFXScrollPane.smoothScrolling(scrollpane);
 
@@ -150,7 +146,7 @@ public class MainController implements StreamPlayerListener {
             playService = new PlayService(mainApp, this);
 
             listview.setItems(mainApp.getSoundBoards());
-            listview.setCellFactory(param -> new SoundBoardCell());
+            listview.setCellFactory(param -> new SoundBoardCell(this));
             listview.getSelectionModel().selectedIndexProperty().addListener(event -> {
                 loadSoundboard(listview.getSelectionModel().getSelectedIndex());
                 currentSoundboardIndex = listview.getSelectionModel().getSelectedIndex();
@@ -166,7 +162,9 @@ public class MainController implements StreamPlayerListener {
 
     }
 
-
+    /**
+     * Load settings UI
+     */
     public void loadSettings() {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -268,59 +266,57 @@ public class MainController implements StreamPlayerListener {
 
         button.setOnAction(event -> {
             //Play the song
-            playSong(audioClip.getPath());
+            if (!editMode.getValue()) {
+                playSong(audioClip.getPath());
+            }
         });
-
         //Edit container
         HBox edit = new HBox();
-        edit.setAlignment(Pos.BOTTOM_LEFT);
+        edit.setAlignment(Pos.BOTTOM_CENTER);
         edit.setVisible(false);
-        Button file = new Button();
 
-        FontIcon filegraphic = new FontIcon(Ionicons4IOS.DOCUMENT);
-        filegraphic.setIconSize(24);
-        file.setGraphic(filegraphic);
-        file.getStyleClass().add("controlButton");
-        file.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            File audiofile = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
-            if (audiofile != null) {
-                audioClip.setFile(audiofile);
-            }
-
+        Button editBtn = new Button();
+        FontIcon editGraphic = new FontIcon(Ionicons4Material.CREATE);
+        editGraphic.setIconSize(24);
+        editBtn.setGraphic(editGraphic);
+        editBtn.setAlignment(Pos.CENTER_LEFT);
+        editBtn.getStyleClass().add("controlButton");
+        editBtn.setOnAction(event -> {
+            showAddAudioDialog(audioClip.getName(), audioClip.getPath(), audioClip.getShortcut(), true);
         });
 
-        Button repeat = new Button();
-        FontIcon repeatgraphic = new FontIcon(Ionicons4IOS.REPEAT);
-        repeatgraphic.setIconSize(24);
-        repeat.setGraphic(repeatgraphic);
-        repeat.getStyleClass().add("controlButton");
-
-        Button info = new Button();
-        FontIcon infographic = new FontIcon(Ionicons4IOS.INFORMATION_CIRCLE);
-        infographic.setIconSize(24);
-        info.setGraphic(infographic);
-        info.getStyleClass().add("controlButton");
-        info.setOnAction(event -> {
-            infoDialog = new InfoDialog(audioClip.getName(), audioClip.getPath(), audioClip.getShortcut());
-            infoDialog.showAndWait();
-
+        Button del = new Button();
+        FontIcon delGraphic = new FontIcon(Ionicons4IOS.REMOVE_CIRCLE);
+        delGraphic.setIconSize(24);
+        del.setGraphic(delGraphic);
+        del.setAlignment(Pos.CENTER_RIGHT);
+        del.getStyleClass().add("controlButton");
+        del.setOnAction(event -> {
+            deleteAudioClip(audioClip);
         });
 
 
-        edit.getChildren().addAll(file, repeat, info);
+        edit.getChildren().addAll(editBtn, del);
         editContainers.add(edit);
-        button.setGraphic(edit);
+
+        VBox container = new VBox();
+        container.setAlignment(Pos.BOTTOM_CENTER);
+        edit.setAlignment(Pos.BOTTOM_CENTER);
+        container.setFillWidth(true);
+        Label name = new Label(audioClip.getName());
+        name.setAlignment(Pos.CENTER);
+        edit.setPadding(new Insets(buttonsize / 4, 0, 0, 0));
+        container.getChildren().addAll(name, edit);
+        button.setGraphic(container);
 
         button.setMaxSize(buttonsize, buttonsize);
         button.setPrefWidth(buttonsize);
         button.setContentDisplay(ContentDisplay.BOTTOM);
-        button.setAlignment(Pos.BOTTOM_LEFT);
+        button.setAlignment(Pos.CENTER);
         button.setPrefHeight(buttonsize);
         button.setMinHeight(buttonsize);
         button.setMinWidth(buttonsize);
         button.setCache(true);
-        button.setText(audioClip.getName());
 
 
         return button;
@@ -414,14 +410,17 @@ public class MainController implements StreamPlayerListener {
         // Load first soundboard
         grid.getChildren().clear();
         board.clear();
-        for (AudioClip audioClip : mainApp.getSoundBoards().get(index).getAudioClips()) {
+        if (mainApp.getSoundBoards().size() > 0) {
 
-            board.add(createButton(audioClip, 120));
-        }
+            for (AudioClip audioClip : mainApp.getSoundBoards().get(index).getAudioClips()) {
 
-        grid.getChildren().addAll(board);
-        if (editMode.getValue()) {
-            enableEditMode();
+                board.add(createButton(audioClip, 120));
+            }
+
+            grid.getChildren().addAll(board);
+            if (editMode.getValue()) {
+                enableEditMode();
+            }
         }
     }
 
@@ -432,14 +431,36 @@ public class MainController implements StreamPlayerListener {
      * @param actionEvent
      */
     public void addBtn(ActionEvent actionEvent) {
+        showAddAudioDialog("", "", "", false);
 
+    }
+
+    /**
+     * Show add audio dialog
+     *
+     * @param audioClipName name of the audio clip
+     * @param path          path of the audio file
+     * @param shorcut       shortcut to play the audio file
+     * @param edit          true if edit or false if add to database
+     */
+    public void showAddAudioDialog(String audioClipName, String path, String shorcut, boolean edit) {
         JFXDialogLayout content = new JFXDialogLayout();
         GridPane grid = new GridPane();
 
 
         JFXTextField name = new JFXTextField();
         JFXTextField file = new JFXTextField();
-        JFXTextField shortcut = new JFXTextField();
+        JFXTextField shortcutField = new JFXTextField();
+        if (!audioClipName.isEmpty() && audioClipName != null) {
+            name.setText(audioClipName);
+        }
+        if (path != null) {
+            file.setText(path);
+        }
+        if (shorcut != null) {
+            shortcutField.setText(shorcut);
+        }
+
         name.setPromptText("Name");
         file.setPromptText("File");
         file.setOnMouseClicked(event -> {
@@ -451,32 +472,46 @@ public class MainController implements StreamPlayerListener {
 
 
         });
-        shortcut.setPromptText("Shortcut");
+        shortcutField.setPromptText("Shortcut");
         grid.add(new Label("Audio clip name:"), 0, 0);
         grid.add(name, 1, 0);
         grid.add(new Label("Soundboard name:"), 0, 1);
         grid.add(file, 1, 1);
         grid.add(new Label("Shortcut:"), 0, 2);
-        grid.add(shortcut, 1, 2);
+        grid.add(shortcutField, 1, 2);
         grid.setHgap(10);
         content.setBody(grid);
         JFXButton ok = new JFXButton("Ok");
         ok.setButtonType(JFXButton.ButtonType.RAISED);
         ok.setOnAction(event -> {
-            addAudioClip(name.getText(), new File(file.getText()), shortcut.getText());
+            AudioClip audioClip;
+            if (shortcutField.getText().isEmpty()) {
+                audioClip = new AudioClip(name.getText(), new File(file.getText()));
+
+            } else {
+                audioClip = new AudioClip(name.getText(), new File(file.getText()), shortcutField.getText());
+            }
+
+            if (edit) {
+                //Edit audio clip
+                editAudioClip(audioClip);
+            } else { // else add
+                addAudioClip(audioClip);
+
+            }
         });
         content.setActions(ok);
 
-        addAudioDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
+        jfxDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
 
 
-        addAudioDialog.show();
+        jfxDialog.show();
         dialogstackpane.toFront();
-        addAudioDialog.setOnDialogClosed(event -> {
+        jfxDialog.setOnDialogClosed(event -> {
             dialogstackpane.toBack();
         });
-
     }
+
 
     /**
      * Handle the add soundboard button
@@ -502,19 +537,24 @@ public class MainController implements StreamPlayerListener {
         });
         content.setActions(ok);
 
-        addSoundboardDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
+        jfxDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
 
 
-        addSoundboardDialog.show();
+        jfxDialog.show();
         dialogstackpane.toFront();
-        addSoundboardDialog.setOnDialogClosed(event -> {
+        jfxDialog.setOnDialogClosed(event -> {
             dialogstackpane.toBack();
         });
     }
 
+    /**
+     * Add a sounboard to database and UI
+     *
+     * @param soundboard_name
+     */
     private void addSoundBoard(String soundboard_name) {
         if (!soundboard_name.isEmpty()) {
-            addSoundboardDialog.close();
+            jfxDialog.close();
             mainApp.getSoundBoards().add(new SoundBoard(soundboard_name));
             listview.getSelectionModel().selectLast();
             DBHelper.addSounboard(soundboard_name);
@@ -522,23 +562,49 @@ public class MainController implements StreamPlayerListener {
     }
 
 
-    private void addAudioClip(String name, File file, String shortcut) {
-        if (!name.isEmpty() && file.isFile()) {
-            AudioClip audioClip;
-            if (shortcut.length() > 0) {
-                audioClip = new AudioClip(name, file, shortcut);
-
-            } else {
-                audioClip = new AudioClip(name, file);
-
-            }
-            mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().add(audioClip);
+    /**
+     * Add audio clip to current soundboard and UI
+     *
+     * @param audioClip
+     */
+    private void addAudioClip(AudioClip audioClip) {
+        if (!audioClip.getName().isEmpty() && audioClip.getFile().isFile()) {
+            mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().add(DBHelper.addAudioClip(currentSoundboardIndex + 1, audioClip));
             loadSoundboard(currentSoundboardIndex);
-            DBHelper.addAudioClip(currentSoundboardIndex, name, file, shortcut);
-            addAudioDialog.close();
+            jfxDialog.close();
         }
     }
 
+    /**
+     * Edit audio clip in database and UI
+     *
+     * @param audioClip
+     */
+    private void editAudioClip(AudioClip audioClip) {
+        if (!audioClip.getName().isEmpty() && audioClip.getFile().isFile()) {
+            DBHelper.editAudioClip(audioClip);
+            mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().set(audioClip.getId() - 1, audioClip);
+            loadSoundboard(currentSoundboardIndex);
+            jfxDialog.close();
+        }
+    }
+
+    /**
+     * Delete audio clip from database and UI
+     *
+     * @param audioClip
+     */
+    private void deleteAudioClip(AudioClip audioClip) {
+        DBHelper.removeAudioClip(audioClip);
+        mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().remove(audioClip.getId() - 1);
+        grid.getChildren().remove(audioClip.getId() - 1);
+        board.remove(audioClip.getId() - 1);
+
+    }
+
+    /**
+     * bind volume
+     */
     public void volumeControl() {
         volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             mainApp.getStreamPlayer().setGain((double) newValue / 100.00);
@@ -561,6 +627,11 @@ public class MainController implements StreamPlayerListener {
 
     }
 
+    /**
+     * Get the current audio clip
+     *
+     * @return
+     */
     public AudioClip getCurrentAudioClip() {
         return currentAudioClip;
     }

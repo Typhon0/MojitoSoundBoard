@@ -22,7 +22,7 @@ public class SoundBoard {
     private String name;
 
     /**
-     * Soundboard id
+     * Soundboard database ID
      */
     private int id;
 
@@ -85,5 +85,22 @@ public class SoundBoard {
                 ", mixer=" + mixer +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public boolean audioClipExist(AudioClip audioClip) {
+        for (AudioClip ac : audioClips) {
+            if (ac.getId() == audioClip.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get the soundboard database ID
+     * @return
+     */
+    public int getId() {
+        return id;
     }
 }

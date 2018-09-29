@@ -11,7 +11,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -152,8 +151,9 @@ public class MainController implements StreamPlayerListener {
                 currentSoundboardIndex = listview.getSelectionModel().getSelectedIndex();
             });
 
-
-            loadSoundboard(0);
+            if (mainApp.getSoundBoards().size() > 0) {
+                loadSoundboard(0);
+            }
 
             loadSettings();
             volumeControl();
@@ -550,15 +550,27 @@ public class MainController implements StreamPlayerListener {
     /**
      * Add a sounboard to database and UI
      *
-     * @param soundboard_name
+     * @param soundboardName the name of the soundboard
      */
-    private void addSoundBoard(String soundboard_name) {
-        if (!soundboard_name.isEmpty()) {
+    private void addSoundBoard(String soundboardName) {
+        if (!soundboardName.isEmpty()) {
             jfxDialog.close();
-            mainApp.getSoundBoards().add(new SoundBoard(soundboard_name));
+            mainApp.getSoundBoards().add(DBHelper.addSounboard(soundboardName));
             listview.getSelectionModel().selectLast();
-            DBHelper.addSounboard(soundboard_name);
         }
+    }
+
+    /**
+     * Delete a soundboard in database and UI
+     *
+     * @param soundBoard
+     */
+    public void deleteSoundboard(SoundBoard soundBoard) {
+        mainApp.getSoundBoards().remove(soundBoard.getId() - 1);
+        listview.getItems().remove(soundBoard);
+        grid.getChildren().clear();
+        DBHelper.deleteSoundboard(soundBoard);
+
     }
 
 

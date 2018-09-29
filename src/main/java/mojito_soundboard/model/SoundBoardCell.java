@@ -42,10 +42,7 @@ public class SoundBoardCell extends JFXListCell<SoundBoard> {
         Label name = new Label(item.getName());
         Button del = new Button();
         del.setOnAction(event -> {
-            mainController.getMainApp().getSoundBoards().remove(item.getId() - 1);
-            getListView().getItems().remove(item);
-            mainController.grid.getChildren().clear();
-            DBHelper.deleteSoundboard(item);
+        mainController.deleteSoundboard(item);
         });
         StackPane.setAlignment(name, Pos.CENTER_LEFT);
         StackPane.setAlignment(del, Pos.CENTER_RIGHT);

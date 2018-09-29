@@ -138,24 +138,67 @@ public class DBHelper {
     /**
      * Function to add soundboard to database
      *
-     * @param name of the soundboard
-     * @return true if the soundboard is successfully inserted
+     * @param name name of the soundboard
+     * @return the added soundboard
      */
-    public static boolean addSounboard(String name) {
+    public static SoundBoard addSounboard(String name) {
         Connection c = null;
         PreparedStatement statement = null;
+        SoundBoard soundBoard = null;
         try {
             c = DBHelper.getConnection();
             statement = c.prepareStatement(
-                    "INSERT INTO Soundboard (id,name) VALUES (?,?)");
+                    "INSERT INTO Soundboard (id,name) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
 
             statement.setNull(1, 0);
             statement.setString(2, name);
             statement.executeUpdate();
             c.commit();
 
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                generatedKeys.next();
+                c.commit();
+                soundBoard = new SoundBoard(generatedKeys.getInt(1), name);
+
+            }
 
         } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            cleanConnection(c, statement);
+        }
+
+        return soundBoard;
+    }
+
+    /**
+     * Delete the soundboard with all audio clips
+     *
+     * @param soundBoard
+     * @return true if deleted
+     */
+    public static boolean deleteSoundboard(SoundBoard soundBoard) {
+
+        Connection c = null;
+        PreparedStatement statement = null;
+        try {
+            c = DBHelper.getConnection();
+
+            for (AudioClip audioClip : soundBoard.getAudioClips()) {
+                removeAudioClip(audioClip);
+            }
+
+            statement = c.prepareStatement("DELETE FROM Soundboard WHERE id = ? ");
+            statement.setInt(1, soundBoard.getId());
+            statement.executeUpdate();
+            c.commit();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
             return false;
         } catch (ClassNotFoundException e) {
@@ -163,7 +206,6 @@ public class DBHelper {
         } finally {
             cleanConnection(c, statement);
         }
-
         return true;
     }
 
@@ -300,38 +342,5 @@ public class DBHelper {
         DBHelper.dbPath = dbPath;
     }
 
-    /**
-     * Delete the soundboard with all audio clips
-     *
-     * @param soundBoard
-     * @return true if deleted
-     */
-    public static boolean deleteSoundboard(SoundBoard soundBoard) {
 
-        Connection c = null;
-        PreparedStatement statement = null;
-        try {
-            c = DBHelper.getConnection();
-
-            for (AudioClip audioClip : soundBoard.getAudioClips()) {
-                removeAudioClip(audioClip);
-            }
-
-            statement = c.prepareStatement("DELETE FROM Soundboard WHERE id = ? ");
-            statement.setInt(1, soundBoard.getId());
-            statement.executeUpdate();
-            c.commit();
-
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return false;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            cleanConnection(c, statement);
-        }
-        return true;
-    }
 }

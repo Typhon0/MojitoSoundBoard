@@ -1,4 +1,8 @@
-apply plugin: 'application'
+plugins {
+    id 'com.github.johnrengelman.shadow' version '4.0.0'
+    id 'java'
+    id 'application'
+}
 
 mainClassName = "mojito_soundboard.MainApp"
 
@@ -29,11 +33,20 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "mojito_soundboard.MainApp"
+        attributes("Main-Class": "mojito_soundboard.MainApp",
+                "Class-Path": configurations.compile.collect { it.getName() }.join(' '))
     }
+
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
+}
+
+
+shadowJar {
+    baseName = 'Mojito Soundboard'
+    mergeServiceFiles()
+
 }
 
 javadoc {

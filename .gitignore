@@ -95,3 +95,5 @@ Thumbs.db
 .project
 .classpath
 .settings/
+
+*.db

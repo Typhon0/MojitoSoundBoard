@@ -70,21 +70,27 @@
                             <ScrollPane fx:id="scrollpane" fitToHeight="true" fitToWidth="true"
                                         BorderPane.alignment="CENTER" StackPane.alignment="CENTER">
                                 <content>
-                                    <FlowPane fx:id="grid" alignment="CENTER_LEFT" columnHalignment="LEFT" hgap="10.0"
+                                    <FlowPane  fx:id="grid" alignment="TOP_LEFT" columnHalignment="LEFT" hgap="10.0"
                                               prefHeight="200.0" prefWidth="200.0" vgap="10.0">
                                         <padding>
-                                            <Insets bottom="10.0" left="40.0" right="10.0" top="10.0"/>
+                                            <Insets bottom="10.0" left="40.0" right="10.0" top="50.0"/>
                                         </padding>
                                     </FlowPane>
                                 </content>
                             </ScrollPane>
                             <JFXHamburger fx:id="hamburger" alignment="TOP_CENTER" maxHeight="30" maxWidth="40"
                                           onMouseClicked="#handleHamburger" BorderPane.alignment="TOP_LEFT"
-                                          StackPane.alignment="TOP_LEFT">
+                                StackPane.alignment="TOP_LEFT">
                                 <StackPane.margin>
                                     <Insets top="10.0"/>
                                 </StackPane.margin>
                             </JFXHamburger>
+                            <Label fx:id="soundboardLabel"  styleClass="h6"  alignment="TOP_CENTER" BorderPane.alignment="TOP_CENTER"
+                                   StackPane.alignment="TOP_CENTER" >
+                                <StackPane.margin>
+                                    <Insets top="10.0"/>
+                                </StackPane.margin>
+                            </Label>
                         </StackPane>
                     </content>
                     <sidePane>

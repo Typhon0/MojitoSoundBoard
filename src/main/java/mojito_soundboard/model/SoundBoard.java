@@ -1,5 +1,8 @@
 package mojito_soundboard.model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Mixer;
 import java.util.ArrayList;
@@ -19,7 +22,7 @@ public class SoundBoard {
     /**
      * Soundboard name
      */
-    private String name;
+    private StringProperty name;
 
     /**
      * Soundboard database ID
@@ -31,14 +34,14 @@ public class SoundBoard {
     }
 
     public SoundBoard(String name) {
-        this.name = name;
+        this.name = new SimpleStringProperty(name);
         audioClips = new ArrayList<>();
 
     }
 
     public SoundBoard(int id, String name) {
         this.id = id;
-        this.name = name;
+        this.name = new SimpleStringProperty(name);
         audioClips = new ArrayList<>();
 
 
@@ -46,7 +49,7 @@ public class SoundBoard {
 
     public SoundBoard(int id, String name, String mixer) {
         this.id = id;
-        this.name = name;
+        this.name = new SimpleStringProperty(name);
         this.mixer = getMixer(mixer);
         audioClips = new ArrayList<>();
 
@@ -75,6 +78,10 @@ public class SoundBoard {
     }
 
     public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
         return name;
     }
 
@@ -98,6 +105,7 @@ public class SoundBoard {
 
     /**
      * Get the soundboard database ID
+     *
      * @return
      */
     public int getId() {

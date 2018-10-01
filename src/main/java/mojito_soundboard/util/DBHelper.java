@@ -1,5 +1,6 @@
 package mojito_soundboard.util;
 
+import javafx.scene.paint.Color;
 import mojito_soundboard.model.AudioClip;
 import mojito_soundboard.model.SoundBoard;
 import org.sqlite.SQLiteConfig;
@@ -45,6 +46,7 @@ public class DBHelper {
                     "`name`	TEXT," +
                     "`path`	TEXT NOT NULL," +
                     "`shortcut`	TEXT," +
+                    "`color`	TEXT," +
                     "`idSoundboard` INTEGER NOT NULL," +
                     "PRIMARY KEY(`id`));";
             statement.execute(sql);
@@ -115,7 +117,7 @@ public class DBHelper {
                 rsp = preparedStatement.executeQuery();
 
                 while (rsp.next()) {
-                    soundBoard.getAudioClips().add(new AudioClip(rsp.getInt(1), rsp.getString(2), new File(rsp.getString(3)), rsp.getInt(4)));
+                    soundBoard.getAudioClips().add(new AudioClip(rsp.getInt(1), rsp.getString(2), new File(rsp.getString(3)), rsp.getString(4),Color.valueOf(rsp.getString(5)), rsp.getInt(6)));
                     c.commit();
                 }
                 soundBoards.add(soundBoard);
@@ -158,6 +160,7 @@ public class DBHelper {
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 generatedKeys.next();
                 c.commit();
+                System.out.println(generatedKeys.getInt(1));
                 soundBoard = new SoundBoard(generatedKeys.getInt(1), name);
 
             }
@@ -223,21 +226,22 @@ public class DBHelper {
         try {
             c = DBHelper.getConnection();
             statement = c.prepareStatement(
-                    "INSERT INTO AudioClip (id,name,path,shortcut,idSoundboard)" +
-                            "VALUES (?,?,?,?,?)"
+                    "INSERT INTO AudioClip (id,name,path,shortcut,color,idSoundboard)" +
+                            "VALUES (?,?,?,?,?,?)"
                     , Statement.RETURN_GENERATED_KEYS);
 
             statement.setNull(1, 0);
             statement.setString(2, audioClip.getName());
             statement.setString(3, audioClip.getFile().getPath());
             statement.setString(4, audioClip.getShortcut());
-            statement.setInt(5, currentSoundboardID);
+            statement.setString(5, audioClip.getColor().toString());
+            statement.setInt(6, currentSoundboardID);
             statement.executeUpdate();
 
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 generatedKeys.next();
                 c.commit();
-                audioClip1 = new AudioClip(generatedKeys.getInt(1), audioClip.getName(), audioClip.getFile(), audioClip.getShortcut(), currentSoundboardID);
+                audioClip1 = new AudioClip(generatedKeys.getInt(1), audioClip.getName(), audioClip.getFile(), audioClip.getShortcut(), audioClip.getColor(), currentSoundboardID);
 
             }
 

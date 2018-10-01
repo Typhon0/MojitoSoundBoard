@@ -1,5 +1,7 @@
 package mojito_soundboard.model;
 
+import javafx.scene.paint.Color;
+
 import java.io.File;
 
 /**
@@ -26,37 +28,43 @@ public class AudioClip {
      */
     private String shortcut;
 
+    private Color color;
+
     /**
      * Database Soundboard id
      * need to subtract 1 for the ArrayList index
      */
     private int idSoundboard;
 
-    public AudioClip(int id, String name, File file, String shortcut, int idSoundboard) {
+    public AudioClip(int id, String name, File file, String shortcut, Color color, int idSoundboard) {
         this.id = id;
         this.idSoundboard = idSoundboard;
         this.name = name;
         this.file = file;
         this.shortcut = shortcut;
+        this.color = color;
     }
 
-    public AudioClip(int id, String name, File file, int idSoundboard) {
+    public AudioClip(int id, String name, File file, Color color, int idSoundboard) {
         this.id = id;
         this.idSoundboard = idSoundboard;
         this.name = name;
         this.file = file;
+        this.color = color;
+
     }
 
-    public AudioClip(String name, File file) {
+    public AudioClip(String name, File file, Color color) {
         this.name = name;
         this.file = file;
+        this.color = color;
     }
 
-    public AudioClip(String name, File file, String shortcut) {
-
+    public AudioClip(String name, File file, String shortcut, Color color) {
         this.name = name;
         this.file = file;
         this.shortcut = shortcut;
+        this.color = color;
     }
 
     /**
@@ -134,6 +142,7 @@ public class AudioClip {
 
     /**
      * Get the database ID of the audio clip
+     *
      * @return the database audio clip ID
      */
     public int getId() {
@@ -143,9 +152,14 @@ public class AudioClip {
 
     /**
      * Get the database ID of the soundboard of the audio clip
+     *
      * @return the database soundboard ID of the audio clip
      */
     public int getIdSoundboard() {
         return idSoundboard;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

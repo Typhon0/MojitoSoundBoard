@@ -9,6 +9,14 @@
     src: url("../fonts/OpenSans-Bold.ttf");
 }
 
+FlowPane {
+    -fx-background-color: white;
+}
+
+.jfx-button {
+    -jfx-button-type: RAISED;
+}
+
 /************ Font Size ****************/
 .h1 {
     -fx-font-size: 96px;
@@ -34,7 +42,7 @@
     -fx-font-size: 20px;
 }
 
-.bold{
+.bold {
     -fx-font-family: OpenSansBold;
 }
 

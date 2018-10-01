@@ -1,6 +1,7 @@
 package mojito_soundboard;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -28,21 +29,27 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        preferences = Preferences.userRoot().node(this.getClass().getName());
-        streamPlayer = new StreamPlayer();
-        this.primaryStage = primaryStage;
-        soundBoards = FXCollections.observableArrayList();
-        DBHelper.initDB(System.getProperty("user.dir"));
-        soundBoards.setAll(DBHelper.loadSoundboards());
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/fxml/main.fxml"));
-        rootLayout = loader.load();
-        MainController mainController = loader.getController();
-        mainController.setMainApp(this);
-        this.primaryStage.setTitle("Mojito SoundBoard");
-        this.primaryStage.setScene(new Scene(rootLayout, 600, 500));
-        this.primaryStage.setMinWidth(600);
-        this.primaryStage.show();
+        try {
+
+
+            preferences = Preferences.userRoot().node(this.getClass().getName());
+            streamPlayer = new StreamPlayer();
+            this.primaryStage = primaryStage;
+            soundBoards = FXCollections.observableArrayList();
+            DBHelper.initDB(System.getProperty("user.dir"));
+            soundBoards.setAll(DBHelper.loadSoundboards());
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/main.fxml"));
+            rootLayout = loader.load();
+            MainController mainController = loader.getController();
+            mainController.setMainApp(this);
+            this.primaryStage.setTitle("Mojito SoundBoard");
+            this.primaryStage.setScene(new Scene(rootLayout, 600, 500));
+            this.primaryStage.setMinWidth(600);
+            this.primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -74,6 +81,8 @@ public class MainApp extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
+        Platform.exit();
+        System.exit(0);
 
     }
 }

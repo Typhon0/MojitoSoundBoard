@@ -36,6 +36,15 @@ public class AudioClip {
      */
     private int idSoundboard;
 
+    public AudioClip(AudioClip audioClip) {
+        this.id = audioClip.getId();
+        this.name = audioClip.getName();
+        this.file = audioClip.getFile();
+        this.shortcut = audioClip.getShortcut();
+        this.color = audioClip.getColor();
+        this.idSoundboard = audioClip.getIdSoundboard();
+    }
+
     public AudioClip(int id, String name, File file, String shortcut, Color color, int idSoundboard) {
         this.id = id;
         this.idSoundboard = idSoundboard;
@@ -45,16 +54,9 @@ public class AudioClip {
         this.color = color;
     }
 
-    public AudioClip(int id, String name, File file, Color color, int idSoundboard) {
-        this.id = id;
-        this.idSoundboard = idSoundboard;
-        this.name = name;
-        this.file = file;
-        this.color = color;
-
-    }
 
     public AudioClip(String name, File file, Color color) {
+        this.shortcut = "";
         this.name = name;
         this.file = file;
         this.color = color;
@@ -123,6 +125,16 @@ public class AudioClip {
     }
 
     /**
+     * Set the audio file file
+     *
+     * @param filepath
+     */
+    public void setFile(String filepath) {
+        this.file = new File(filepath);
+    }
+
+
+    /**
      * Set the keyboard shortcut to play the audio
      *
      * @param shortcut
@@ -134,9 +146,12 @@ public class AudioClip {
     @Override
     public String toString() {
         return "AudioClip{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", file=" + file +
                 ", shortcut='" + shortcut + '\'' +
+                ", color=" + color +
+                ", idSoundboard=" + idSoundboard +
                 '}';
     }
 
@@ -161,5 +176,9 @@ public class AudioClip {
 
     public Color getColor() {
         return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

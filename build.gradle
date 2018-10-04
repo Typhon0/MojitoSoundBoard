@@ -25,7 +25,7 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
     /*SPI*/
-    compile files('lib/JustFlac.jar')
+    compile files('lib/JustFLAC.jar')
     compile 'net.sourceforge.jaadec:jaad:0.8.5'
     compile group: 'com.googlecode.soundlibs', name: 'mp3spi', version: '1.9.5.4'
 }

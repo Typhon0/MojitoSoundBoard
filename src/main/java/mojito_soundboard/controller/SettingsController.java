@@ -46,6 +46,7 @@ public class SettingsController {
         }
 
         Platform.runLater(() -> {
+            audioDeviceList.setValue(mainApp.getPreferences().get(MIXER_KEY, ""));
             audioDeviceList.valueProperty().addListener((observable, oldValue, newValue) -> {
                 mainApp.getPreferences().put(MIXER_KEY, newValue);
                 mainApp.getStreamPlayer().setMixerName(newValue);

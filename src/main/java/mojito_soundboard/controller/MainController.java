@@ -677,7 +677,7 @@ public class MainController implements StreamPlayerListener {
      * @param soundBoard
      */
     public void deleteSoundboard(SoundBoard soundBoard) {
-        mainApp.getSoundBoards().remove(soundBoard.getId() - 1);
+        mainApp.getSoundBoards().remove(findSoundboardIndex(soundBoard));
         listview.getItems().remove(soundBoard);
         grid.getChildren().clear();
         DBHelper.deleteSoundboard(soundBoard);
@@ -706,9 +706,8 @@ public class MainController implements StreamPlayerListener {
      */
     private void editAudioClip(AudioClip audioClip) {
         if (!audioClip.getName().isEmpty() && audioClip.getFile().isFile()) {
-
             DBHelper.editAudioClip(audioClip);
-            mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().set(audioClip.getId() - 1, audioClip);
+            mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().set(findAudioClipIndex(audioClip), audioClip);
             loadSoundboard(currentSoundboardIndex);
             jfxDialog.close();
         }
@@ -721,11 +720,36 @@ public class MainController implements StreamPlayerListener {
      */
     private void deleteAudioClip(AudioClip audioClip) {
         DBHelper.removeAudioClip(audioClip);
-        mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().remove(audioClip.getId() - 1);
-        grid.getChildren().remove(audioClip.getId() - 1);
-        board.remove(audioClip.getId() - 1);
+        int index = findAudioClipIndex(audioClip);
+        mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().remove(index);
+        grid.getChildren().remove(index);
+        board.remove(index);
 
     }
+
+    /**
+     * Return the index of the audio clip in the list
+     *
+     * @return index
+     */
+    private int findAudioClipIndex(AudioClip audioClip) {
+        for (int i = 0; i < mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().size(); i++) {
+            if (audioClip.equals(mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int findSoundboardIndex(SoundBoard soundBoard) {
+        for (int i = 0; i < mainApp.getSoundBoards().size(); i++) {
+            if (soundBoard.equals(mainApp.getSoundBoards().get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
     /**
      * bind volume

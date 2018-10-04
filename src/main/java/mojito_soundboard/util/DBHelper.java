@@ -294,7 +294,6 @@ public class DBHelper {
      * @return true if the audio clip is successfully inserted
      */
     public static boolean editAudioClip(AudioClip audioClip) {
-        System.out.println(audioClip);
         Connection c = null;
         PreparedStatement statement = null;
         try {

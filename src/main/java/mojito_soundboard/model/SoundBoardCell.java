@@ -4,14 +4,19 @@ import com.jfoenix.controls.JFXListCell;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import mojito_soundboard.controller.MainController;
 import mojito_soundboard.util.DBHelper;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
+import org.kordamp.ikonli.ionicons4.Ionicons4Material;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
@@ -43,22 +48,32 @@ public class SoundBoardCell extends JFXListCell<SoundBoard> {
         StackPane stackPane = new StackPane();
         stackPane.setPrefWidth(200);
 
-        Label name = new Label(item.getName());
+        HBox hBox = new HBox();
+
+        Label name = new Label();
+        name.textProperty().bind(item.nameProperty());
         Button del = new Button();
         del.setOnAction(event -> {
             mainController.deleteSoundboard(item);
         });
-        StackPane.setAlignment(name, Pos.CENTER_LEFT);
-        StackPane.setAlignment(del, Pos.CENTER_RIGHT);
+        Button edit = new Button();
+        edit.setOnAction(event -> {
+            mainController.editSoundboardDialog(item);
+        });
+
         FontIcon delGraphic = new FontIcon(Ionicons4IOS.REMOVE_CIRCLE);
         delGraphic.setIconSize(20);
         del.setGraphic(delGraphic);
-        del.setVisible(false);
-        del.visibleProperty().bind(mainController.editModeProperty());
         del.getStyleClass().add("controlButton");
-
-
-        stackPane.getChildren().addAll(name, del);
+        FontIcon editGraphic = new FontIcon(Ionicons4Material.CREATE);
+        editGraphic.setIconSize(20);
+        edit.setGraphic(editGraphic);
+        edit.getStyleClass().add("controlButton");
+        hBox.setAlignment(Pos.CENTER_RIGHT);
+        hBox.visibleProperty().bind(mainController.editModeProperty());
+        hBox.getChildren().addAll(edit, del);
+        StackPane.setAlignment(name, Pos.CENTER_LEFT);
+        stackPane.getChildren().addAll(name, hBox);
 
 
         return stackPane;

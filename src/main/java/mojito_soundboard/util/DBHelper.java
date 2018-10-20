@@ -117,7 +117,7 @@ public class DBHelper {
                 rsp = preparedStatement.executeQuery();
 
                 while (rsp.next()) {
-                    soundBoard.getAudioClips().add(new AudioClip(rsp.getInt(1), rsp.getString(2), new File(rsp.getString(3)), rsp.getString(4),Color.valueOf(rsp.getString(5)), rsp.getInt(6)));
+                    soundBoard.getAudioClips().add(new AudioClip(rsp.getInt(1), rsp.getString(2), new File(rsp.getString(3)), rsp.getString(4), Color.valueOf(rsp.getString(5)), rsp.getInt(6)));
                     c.commit();
                 }
                 soundBoards.add(soundBoard);
@@ -138,7 +138,7 @@ public class DBHelper {
 
 
     /**
-     * Function to add soundboard to database
+     * Method to add soundboard to database
      *
      * @param name name of the soundboard
      * @return the added soundboard
@@ -213,7 +213,7 @@ public class DBHelper {
     }
 
     /**
-     * Function to add audioclip to the database
+     * Method to add audioclip to the database
      *
      * @param currentSoundboardID
      * @param audioClip
@@ -258,7 +258,7 @@ public class DBHelper {
     }
 
     /**
-     * Function to add audioclip to the database
+     * Method to add audioclip to the database
      *
      * @param audioClip
      * @return return the audio clip with the generated ID
@@ -288,7 +288,7 @@ public class DBHelper {
     }
 
     /**
-     * Function to add audioclip to the database
+     * Method to add audioclip to the database
      *
      * @param audioClip
      * @return true if the audio clip is successfully inserted
@@ -320,6 +320,36 @@ public class DBHelper {
         }
 
 
+        return true;
+    }
+
+    /**
+     * Method to edit a soundboard in the database
+     *
+     * @param soundBoard the edited soudnboard
+     * @return true if the soundboard is successfully updated
+     */
+    public static boolean editSoundBoard(SoundBoard soundBoard) {
+        Connection c = null;
+        PreparedStatement statement = null;
+        try {
+            c = DBHelper.getConnection();
+            statement = c.prepareStatement(
+                    "UPDATE Soundboard SET name = ? WHERE id = ?");
+
+            statement.setString(1, soundBoard.getName());
+            statement.setInt(2, soundBoard.getId());
+            statement.executeUpdate();
+            c.commit();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            cleanConnection(c, statement);
+        }
         return true;
     }
 

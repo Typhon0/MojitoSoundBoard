@@ -658,6 +658,36 @@ public class MainController implements StreamPlayerListener {
         });
     }
 
+
+    public void editSoundboardDialog(SoundBoard soundBoard) {
+
+        JFXDialogLayout content = new JFXDialogLayout();
+        GridPane grid = new GridPane();
+
+
+        JFXTextField name = new JFXTextField();
+        name.setPromptText("Name");
+        name.setText(soundBoard.getName());
+        grid.add(new Label("Soundboard name:"), 0, 0);
+        grid.add(name, 1, 0);
+        grid.setHgap(10);
+        content.setBody(grid);
+        JFXButton ok = new JFXButton("Ok");
+        ok.setButtonType(JFXButton.ButtonType.RAISED);
+        ok.setStyle("-fx-background-color: GRAY");
+        ok.setOnAction(event -> {
+            soundBoard.setName(name.getText());
+            editSoundboard(soundBoard);
+        });
+        content.setActions(ok);
+        jfxDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
+        jfxDialog.show();
+        dialogstackpane.toFront();
+        jfxDialog.setOnDialogClosed(event -> {
+            dialogstackpane.toBack();
+        });
+    }
+
     /**
      * Add a sounboard to database and UI
      *
@@ -682,6 +712,14 @@ public class MainController implements StreamPlayerListener {
         grid.getChildren().clear();
         DBHelper.deleteSoundboard(soundBoard);
 
+    }
+
+
+    public void editSoundboard(SoundBoard soundBoard) {
+        DBHelper.editSoundBoard(soundBoard);
+        mainApp.getSoundBoards().get(findSoundboardIndex(soundBoard)).setName(soundBoard.getName());
+        loadSoundboard(currentSoundboardIndex);
+        jfxDialog.close();
     }
 
 
@@ -775,4 +813,5 @@ public class MainController implements StreamPlayerListener {
     public void statusUpdated(StreamPlayerEvent event) {
 
     }
+
 }

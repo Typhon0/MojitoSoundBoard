@@ -90,7 +90,8 @@ public class SoundBoard {
         return "SoundBoard{" +
                 "audioClips=" + audioClips +
                 ", mixer=" + mixer +
-                ", name='" + name + '\'' +
+                ", name=" + name +
+                ", id=" + id +
                 '}';
     }
 
@@ -110,5 +111,9 @@ public class SoundBoard {
      */
     public int getId() {
         return id;
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
     }
 }

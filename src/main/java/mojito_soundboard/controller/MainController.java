@@ -26,10 +26,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import mojito_soundboard.MainApp;
-import mojito_soundboard.dialog.AddAudioClipDialog;
-import mojito_soundboard.dialog.AddSoundboardDialog;
-import mojito_soundboard.dialog.EditAudioClipDialog;
-import mojito_soundboard.dialog.EditSoundboardDialog;
+import mojito_soundboard.dialog.*;
 import mojito_soundboard.model.*;
 import mojito_soundboard.util.DBHelper;
 import mojito_soundboard.util.stream.StreamPlayerEvent;
@@ -585,13 +582,21 @@ public class MainController implements StreamPlayerListener {
      * @param soundBoard
      */
     public void deleteSoundboard(SoundBoard soundBoard) {
-        mainApp.getSoundBoards().remove(findSoundboardIndex(soundBoard));
-        listview.getItems().remove(soundBoard);
-        grid.getChildren().clear();
-        DBHelper.deleteSoundboard(soundBoard);
-        if (mainApp.getSoundBoards().size() == 0) {
-            addAudioClipBtn.setDisable(true);
-        }
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog(dialogstackpane, "Do you really want to delete this soundboard ?");
+        confirmationDialog.getOkButton().setOnAction(event -> {
+            mainApp.getSoundBoards().remove(findSoundboardIndex(soundBoard));
+            listview.getItems().remove(soundBoard);
+            grid.getChildren().clear();
+            DBHelper.deleteSoundboard(soundBoard);
+            if (mainApp.getSoundBoards().size() == 0) {
+                addAudioClipBtn.setDisable(true);
+            }
+            confirmationDialog.close();
+            dialogstackpane.toBack();
+        });
+        confirmationDialog.show();
+        dialogstackpane.toFront();
+
 
     }
 
@@ -638,11 +643,16 @@ public class MainController implements StreamPlayerListener {
      * @param audioClip
      */
     private void deleteAudioClip(AudioClip audioClip) {
-        DBHelper.removeAudioClip(audioClip);
-        int index = findAudioClipIndex(audioClip);
-        mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().remove(index);
-        grid.getChildren().remove(index);
-        board.remove(index);
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog(dialogstackpane, "Do you really want to delete this audio clip ?");
+        confirmationDialog.getOkButton().setOnAction(event -> {
+            DBHelper.removeAudioClip(audioClip);
+            int index = findAudioClipIndex(audioClip);
+            mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().remove(index);
+            grid.getChildren().remove(index);
+            board.remove(index);
+        });
+        confirmationDialog.show();
+        dialogstackpane.toFront();
 
     }
 

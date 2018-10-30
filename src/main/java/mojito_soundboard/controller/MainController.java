@@ -26,6 +26,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import mojito_soundboard.MainApp;
+import mojito_soundboard.dialog.AddAudioClipDialog;
+import mojito_soundboard.dialog.AddSoundboardDialog;
+import mojito_soundboard.dialog.EditAudioClipDialog;
+import mojito_soundboard.dialog.EditSoundboardDialog;
 import mojito_soundboard.model.*;
 import mojito_soundboard.util.DBHelper;
 import mojito_soundboard.util.stream.StreamPlayerEvent;
@@ -111,6 +115,12 @@ public class MainController implements StreamPlayerListener {
     private Label soundboardLabel;
 
     /**
+     * Add audio clip button
+     */
+    @FXML
+    private Button addAudioClipBtn;
+
+    /**
      * Setting container
      */
     @FXML
@@ -170,7 +180,9 @@ public class MainController implements StreamPlayerListener {
                 currentSoundboardIndex = listview.getSelectionModel().getSelectedIndex();
             });
 
-
+            if (mainApp.getSoundBoards().size() <= 0) {
+                addAudioClipBtn.setDisable(true);
+            }
             loadSettings();
             volumeControl();
         });
@@ -487,57 +499,13 @@ public class MainController implements StreamPlayerListener {
      * Show add audio dialog
      */
     public void showAddAudioDialog() {
-        JFXDialogLayout content = new JFXDialogLayout();
-        GridPane grid = new GridPane();
 
-
-        JFXTextField name = new JFXTextField();
-        JFXTextField file = new JFXTextField();
-        JFXTextField shortcutField = new JFXTextField();
-        JFXColorPicker jfxColorPicker = new JFXColorPicker();
-
-        name.setPromptText("Name");
-        file.setPromptText("File");
-        file.setOnMouseClicked(event -> {
-            file.setText(openFileChooser().getPath());
-        });
-        shortcutField.setPromptText("Shortcut");
-        grid.add(new Label("Audio clip name:"), 0, 0);
-        grid.add(name, 1, 0);
-        grid.add(new Label("Soundboard name:"), 0, 1);
-        grid.add(file, 1, 1);
-        grid.add(new Label("Shortcut:"), 0, 2);
-        grid.add(shortcutField, 1, 2);
-        Label colorL = new Label("Color:");
-
-        GridPane.setMargin(colorL, new Insets(10, 0, 0, 0));
-        grid.add(colorL, 0, 3);
-
-        GridPane.setMargin(jfxColorPicker, new Insets(10, 0, 0, 0));
-        grid.add(jfxColorPicker, 1, 3);
-        grid.setHgap(10);
-        content.setBody(grid);
-        JFXButton ok = new JFXButton("Ok");
-        ok.setStyle("-fx-background-color: GRAY");
-        ok.setButtonType(JFXButton.ButtonType.RAISED);
-        ok.setOnAction(event -> {
-            AudioClip newAudioClip = null;
-            if (!name.getText().isEmpty() && !file.getText().isEmpty()) {
-                if (shortcutField.getText().isEmpty()) {
-                    newAudioClip = new AudioClip(name.getText(), new File(file.getText()), shortcutField.getText(), jfxColorPicker.getValue());
-                } else {
-                    newAudioClip = new AudioClip(name.getText(), new File(file.getText()), jfxColorPicker.getValue());
-                }
-            }
-            addAudioClip(newAudioClip);
-        });
-        content.setActions(ok);
-
-        jfxDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
+        jfxDialog = new AddAudioClipDialog(this);
         jfxDialog.show();
         dialogstackpane.toFront();
         jfxDialog.setOnDialogClosed(event -> {
             dialogstackpane.toBack();
+            jfxDialog = null;
         });
     }
 
@@ -548,72 +516,18 @@ public class MainController implements StreamPlayerListener {
      * @param audioClip the audioclip if editted
      */
     public void showEditAudioDialog(AudioClip audioClip) {
-        JFXDialogLayout content = new JFXDialogLayout();
-        GridPane grid = new GridPane();
 
 
-        JFXTextField name = new JFXTextField();
-        JFXTextField file = new JFXTextField();
-        JFXTextField shortcutField = new JFXTextField();
-        JFXColorPicker jfxColorPicker = new JFXColorPicker();
-
-        //Load audio clip
-        name.setText(audioClip.getName());
-        file.setText(audioClip.getPath());
-        shortcutField.setText(audioClip.getShortcut());
-        jfxColorPicker.setValue(audioClip.getColor());
-
-        name.setPromptText("Name");
-        file.setPromptText("File");
-        file.setOnMouseClicked(event -> {
-            file.setText(openFileChooser().getPath());
-        });
-
-        shortcutField.setPromptText("Shortcut");
-        grid.add(new Label("Audio clip name:"), 0, 0);
-        grid.add(name, 1, 0);
-        grid.add(new Label("Soundboard name:"), 0, 1);
-        grid.add(file, 1, 1);
-        grid.add(new Label("Shortcut:"), 0, 2);
-        grid.add(shortcutField, 1, 2);
-        Label colorL = new Label("Color:");
-
-        GridPane.setMargin(colorL, new Insets(10, 0, 0, 0));
-        grid.add(colorL, 0, 3);
-
-        GridPane.setMargin(jfxColorPicker, new Insets(10, 0, 0, 0));
-        grid.add(jfxColorPicker, 1, 3);
-        grid.setHgap(10);
-        content.setBody(grid);
-        JFXButton ok = new JFXButton("Ok");
-        ok.setStyle("-fx-background-color: GRAY");
-        ok.setButtonType(JFXButton.ButtonType.RAISED);
-        ok.setOnAction(event -> {
-            AudioClip audioClipEdited = new AudioClip(audioClip);
-            if (!name.getText().equals(audioClip.getName())) {
-                audioClipEdited.setName(name.getText());
-            } else if (!file.getText().equals(audioClip.getPath())) {
-                audioClipEdited.setFile(file.getText());
-            } else if (!shortcutField.getText().equals(audioClip.getShortcut())) {
-                audioClipEdited.setShortcut(shortcutField.getText());
-            }
-            audioClipEdited.setColor(jfxColorPicker.getValue());
-            //Edit audio clip
-            editAudioClip(audioClipEdited);
-        });
-        content.setActions(ok);
-
-        jfxDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
-
-
+        jfxDialog = new EditAudioClipDialog(this, audioClip);
         jfxDialog.show();
         dialogstackpane.toFront();
         jfxDialog.setOnDialogClosed(event -> {
             dialogstackpane.toBack();
+            jfxDialog = null;
         });
     }
 
-    private File openFileChooser() {
+    public File openFileChooser() {
         FileChooser fileChooser = new FileChooser();
         File audiofile = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
@@ -629,62 +543,23 @@ public class MainController implements StreamPlayerListener {
      * @param actionEvent
      */
     public void handleAddSoundboard(ActionEvent actionEvent) {
-
-        JFXDialogLayout content = new JFXDialogLayout();
-        GridPane grid = new GridPane();
-
-
-        JFXTextField name = new JFXTextField();
-        name.setPromptText("Name");
-        grid.add(new Label("Soundboard name:"), 0, 0);
-        grid.add(name, 1, 0);
-        grid.setHgap(10);
-        content.setBody(grid);
-        JFXButton ok = new JFXButton("Ok");
-        ok.setButtonType(JFXButton.ButtonType.RAISED);
-        ok.setStyle("-fx-background-color: GRAY");
-        ok.setOnAction(event -> {
-            addSoundBoard(name.getText());
-        });
-        content.setActions(ok);
-
-        jfxDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
-
-
+        jfxDialog = new AddSoundboardDialog(this);
         jfxDialog.show();
         dialogstackpane.toFront();
         jfxDialog.setOnDialogClosed(event -> {
             dialogstackpane.toBack();
+            jfxDialog = null;
         });
     }
 
 
     public void editSoundboardDialog(SoundBoard soundBoard) {
-
-        JFXDialogLayout content = new JFXDialogLayout();
-        GridPane grid = new GridPane();
-
-
-        JFXTextField name = new JFXTextField();
-        name.setPromptText("Name");
-        name.setText(soundBoard.getName());
-        grid.add(new Label("Soundboard name:"), 0, 0);
-        grid.add(name, 1, 0);
-        grid.setHgap(10);
-        content.setBody(grid);
-        JFXButton ok = new JFXButton("Ok");
-        ok.setButtonType(JFXButton.ButtonType.RAISED);
-        ok.setStyle("-fx-background-color: GRAY");
-        ok.setOnAction(event -> {
-            soundBoard.setName(name.getText());
-            editSoundboard(soundBoard);
-        });
-        content.setActions(ok);
-        jfxDialog = new JFXDialog(dialogstackpane, content, JFXDialog.DialogTransition.CENTER);
+        jfxDialog = new EditSoundboardDialog(this, soundBoard);
         jfxDialog.show();
         dialogstackpane.toFront();
         jfxDialog.setOnDialogClosed(event -> {
             dialogstackpane.toBack();
+            jfxDialog = null;
         });
     }
 
@@ -693,11 +568,14 @@ public class MainController implements StreamPlayerListener {
      *
      * @param soundboardName the name of the soundboard
      */
-    private void addSoundBoard(String soundboardName) {
+    public void addSoundBoard(String soundboardName) {
         if (!soundboardName.isEmpty()) {
             jfxDialog.close();
             mainApp.getSoundBoards().add(DBHelper.addSounboard(soundboardName));
             listview.getSelectionModel().selectLast();
+            if (mainApp.getSoundBoards().size() == 1) {
+                addAudioClipBtn.setDisable(false);
+            }
         }
     }
 
@@ -711,6 +589,9 @@ public class MainController implements StreamPlayerListener {
         listview.getItems().remove(soundBoard);
         grid.getChildren().clear();
         DBHelper.deleteSoundboard(soundBoard);
+        if (mainApp.getSoundBoards().size() == 0) {
+            addAudioClipBtn.setDisable(true);
+        }
 
     }
 
@@ -728,7 +609,7 @@ public class MainController implements StreamPlayerListener {
      *
      * @param audioClip
      */
-    private void addAudioClip(AudioClip audioClip) {
+    public void addAudioClip(AudioClip audioClip) {
         if (!audioClip.getName().isEmpty() && audioClip.getFile().isFile()) {
 
             mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().add(DBHelper.addAudioClip(currentSoundboardIndex + 1, audioClip));
@@ -742,7 +623,7 @@ public class MainController implements StreamPlayerListener {
      *
      * @param audioClip
      */
-    private void editAudioClip(AudioClip audioClip) {
+    public void editAudioClip(AudioClip audioClip) {
         if (!audioClip.getName().isEmpty() && audioClip.getFile().isFile()) {
             DBHelper.editAudioClip(audioClip);
             mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().set(findAudioClipIndex(audioClip), audioClip);
@@ -772,7 +653,7 @@ public class MainController implements StreamPlayerListener {
      */
     private int findAudioClipIndex(AudioClip audioClip) {
         for (int i = 0; i < mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().size(); i++) {
-            if (audioClip.equals(mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().get(i))) {
+            if (audioClip.sameID(mainApp.getSoundBoards().get(currentSoundboardIndex).getAudioClips().get(i))) {
                 return i;
             }
         }
@@ -812,6 +693,14 @@ public class MainController implements StreamPlayerListener {
     @Override
     public void statusUpdated(StreamPlayerEvent event) {
 
+    }
+
+    public void handleStop(ActionEvent actionEvent) {
+        mainApp.getStreamPlayer().stop();
+    }
+
+    public StackPane getDialogstackpane() {
+        return dialogstackpane;
     }
 
 }

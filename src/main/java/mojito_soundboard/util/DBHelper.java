@@ -308,6 +308,7 @@ public class DBHelper {
             statement.setInt(4, audioClip.getIdSoundboard());
             statement.setInt(5, audioClip.getId());
             statement.executeUpdate();
+            c.commit();
 
 
         } catch (SQLException e) {

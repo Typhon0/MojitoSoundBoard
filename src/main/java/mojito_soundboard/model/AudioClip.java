@@ -181,4 +181,11 @@ public class AudioClip {
     public void setColor(Color color) {
         this.color = color;
     }
+
+    public boolean sameID(AudioClip audioClip) {
+        if (audioClip.getId() == this.getId() && audioClip.getIdSoundboard() == this.getIdSoundboard()) {
+            return true;
+        }
+        return false;
+    }
 }

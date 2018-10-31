@@ -1,5 +1,14 @@
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
 plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.0'
     id 'java'
     id 'application'
 }
@@ -8,6 +17,7 @@ mainClassName = "mojito_soundboard.MainApp"
 
 repositories {
     jcenter()
+    mavenLocal()
     mavenCentral()
 
 }
@@ -31,26 +41,36 @@ dependencies {
 }
 
 
-jar {
-    manifest {
-        attributes("Main-Class": "mojito_soundboard.MainApp",
-                "Class-Path": configurations.compile.collect { it.getName() }.join(' '))
-    }
-
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
+apply plugin: 'javafx-gradle-plugin'
 
 
-shadowJar {
-    baseName = 'Mojito Soundboard'
-    mergeServiceFiles()
 
-}
+
+
 
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
 }
 
+jfx {
+    verbose = true
+    mainClass = "mojito_soundboard.MainApp"
+    jfxAppOutputDir = "build/jfx/app"
+    jfxMainAppJarName = "mojito-soundboard.jar"
+    deployDir = "src/main/deploy"
+    useEnvironmentRelativeExecutables = true
+    libFolderName = "lib"
+
+    vendor = "typhon0"
+    nativeOutputDir = "build/jfx/native"
+    nativeReleaseVersion = "1.0"
+    bundleArguments = [
+            runtime: null
+    ]
+    appName = "mojito-soundboard"
+
+
+
+
+}

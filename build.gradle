@@ -33,6 +33,7 @@ dependencies {
     compile 'com.jfoenix:jfoenix:8.0.7'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.23.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'com.1stleg', name: 'jnativehook', version: '2.1.0'
 
     /*SPI*/
     compile files('lib/JustFLAC.jar')

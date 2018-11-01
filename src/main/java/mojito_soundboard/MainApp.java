@@ -9,9 +9,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import mojito_soundboard.controller.MainController;
+import mojito_soundboard.model.GlobalKeyListener;
+import mojito_soundboard.model.JavaFxDispatchService;
 import mojito_soundboard.model.SoundBoard;
 import mojito_soundboard.util.DBHelper;
 import mojito_soundboard.util.stream.StreamPlayer;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
 
 import java.util.prefs.Preferences;
 
@@ -31,7 +37,6 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         try {
 
-
             preferences = Preferences.userRoot().node(this.getClass().getName());
             streamPlayer = new StreamPlayer();
             this.primaryStage = primaryStage;
@@ -43,6 +48,7 @@ public class MainApp extends Application {
             rootLayout = loader.load();
             MainController mainController = loader.getController();
             mainController.setMainApp(this);
+            initKeyboardListener();
             this.primaryStage.setTitle("Mojito SoundBoard");
             this.primaryStage.setScene(new Scene(rootLayout, 600, 500));
             this.primaryStage.setMinWidth(600);
@@ -54,6 +60,21 @@ public class MainApp extends Application {
 
 
     }
+
+    public void initKeyboardListener() {
+        GlobalScreen.setEventDispatcher(new JavaFxDispatchService());
+        GlobalKeyListener globalKeyListener = new GlobalKeyListener();
+        try {
+            GlobalScreen.registerNativeHook();
+        } catch (NativeHookException ex) {
+            System.err.println("There was a problem registering the native hook.");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        GlobalScreen.addNativeKeyListener(globalKeyListener);
+    }
+
 
     public AnchorPane getRootLayout() {
         return rootLayout;
@@ -86,4 +107,5 @@ public class MainApp extends Application {
         System.exit(0);
 
     }
+
 }

@@ -46,6 +46,7 @@ public class MainApp extends Application {
             this.primaryStage.setTitle("Mojito SoundBoard");
             this.primaryStage.setScene(new Scene(rootLayout, 600, 500));
             this.primaryStage.setMinWidth(600);
+            this.primaryStage.setMinHeight(400);
             this.primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();

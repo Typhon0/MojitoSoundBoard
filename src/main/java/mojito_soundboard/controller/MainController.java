@@ -596,6 +596,9 @@ public class MainController implements StreamPlayerListener {
         });
         confirmationDialog.show();
         dialogstackpane.toFront();
+        confirmationDialog.setOnDialogClosed(event -> {
+            dialogstackpane.toBack();
+        });
 
 
     }

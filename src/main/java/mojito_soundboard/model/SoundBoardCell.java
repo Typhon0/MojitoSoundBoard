@@ -1,12 +1,6 @@
 package mojito_soundboard.model;
 
 import com.jfoenix.controls.JFXListCell;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -14,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import mojito_soundboard.controller.MainController;
-import mojito_soundboard.util.DBHelper;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Material;
 import org.kordamp.ikonli.javafx.FontIcon;

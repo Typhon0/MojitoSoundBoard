@@ -1,11 +1,12 @@
 package mojito_soundboard.dialog;
 
-import com.jfoenix.controls.*;
-import javafx.geometry.Insets;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import mojito_soundboard.controller.MainController;
-import mojito_soundboard.model.AudioClip;
 import mojito_soundboard.model.SoundBoard;
 
 /**

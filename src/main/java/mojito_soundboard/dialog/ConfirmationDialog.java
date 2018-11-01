@@ -31,7 +31,7 @@ public class ConfirmationDialog extends JFXDialog {
             this.getDialogContainer().toBack();
             this.close();
         });
-        content.setActions(cancel,ok);
+        content.setActions(cancel, ok);
 
         this.setDialogContainer(dialogContainer);
         this.setContent(content);
@@ -43,7 +43,9 @@ public class ConfirmationDialog extends JFXDialog {
         return ok;
     }
 
+
     public JFXButton getCancelButton() {
         return cancel;
     }
+
 }

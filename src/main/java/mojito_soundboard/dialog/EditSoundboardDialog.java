@@ -38,7 +38,11 @@ public class EditSoundboardDialog extends JFXDialog {
             soundBoard.setName(name.getText());
             mainController.editSoundboard(soundBoard);
         });
-        content.setActions(ok);
+        JFXButton cancel = new JFXButton("Cancel");
+        cancel.setStyle("-fx-background-color: GRAY");
+        cancel.setButtonType(JFXButton.ButtonType.RAISED);
+        cancel.setOnAction(e -> this.close());
+        content.setActions(cancel,ok);
         this.setDialogContainer(mainController.getDialogstackpane());
         this.setContent(content);
         this.setTransitionType(DialogTransition.CENTER);

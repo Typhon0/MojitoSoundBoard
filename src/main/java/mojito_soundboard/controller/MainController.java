@@ -29,6 +29,7 @@ import mojito_soundboard.MainApp;
 import mojito_soundboard.dialog.*;
 import mojito_soundboard.model.*;
 import mojito_soundboard.util.DBHelper;
+import mojito_soundboard.util.SupportedAudio;
 import mojito_soundboard.util.stream.StreamPlayerEvent;
 import mojito_soundboard.util.stream.StreamPlayerException;
 import mojito_soundboard.util.stream.StreamPlayerListener;
@@ -526,8 +527,13 @@ public class MainController implements StreamPlayerListener {
 
     public File openFileChooser() {
         FileChooser fileChooser = new FileChooser();
-        File audiofile = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
+        String home = System.getProperty("user.home");
 
+        fileChooser.setTitle("Choose audio file");
+        fileChooser.setInitialDirectory(new File(home));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", SupportedAudio.listSupportedAudio("*.")));
+
+        File audiofile = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
         if (audiofile != null) {
             return audiofile;
         }

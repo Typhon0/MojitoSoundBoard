@@ -2,6 +2,8 @@ package mojito_soundboard.util;
 
 import org.apache.commons.io.FilenameUtils;
 
+import java.util.ArrayList;
+
 public enum SupportedAudio {
 
     mp3,
@@ -21,6 +23,18 @@ public enum SupportedAudio {
             }
         }
         return false;
+    }
+
+    public static ArrayList<String> listSupportedAudio(String prefix) {
+        ArrayList<String> supportedAudioExtensions = new ArrayList<>();
+        for (SupportedAudio extension : values()) {
+            supportedAudioExtensions.add(prefix + extension.toString());
+        }
+        return supportedAudioExtensions;
+    }
+
+    public static ArrayList<String> listSupportedAudio() {
+        return listSupportedAudio("");
     }
 
     /**

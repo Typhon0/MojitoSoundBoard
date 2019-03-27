@@ -2,24 +2,14 @@ package mojito_soundboard.dialog;
 
 import com.jfoenix.controls.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import mojito_soundboard.controller.MainController;
 import mojito_soundboard.model.AudioClip;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeInputEvent;
 
-import javax.swing.*;
 import java.io.File;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 /**
@@ -46,7 +36,8 @@ public class AddAudioClipDialog extends JFXDialog {
         name.setPromptText("Name");
         file.setPromptText("File");
         file.setOnMouseClicked(event -> {
-            file.setText(mainController.openFileChooser().getPath());
+            File fileObj = mainController.openFileChooser();
+            file.setText(fileObj != null ? fileObj.getPath() : "");
         });
         shortcutField.setPromptText("Shortcut");
         //shortcutField.setOnKeyPressed(event -> System.out.println(event));
@@ -81,8 +72,10 @@ public class AddAudioClipDialog extends JFXDialog {
                 } else {
                     newAudioClip = new AudioClip(name.getText(), new File(file.getText()), jfxColorPicker.getValue());
                 }
+                mainController.addAudioClip(newAudioClip);
+            } else {
+                // TODO attentions seeker !
             }
-            mainController.addAudioClip(newAudioClip);
         });
         JFXButton cancel = new JFXButton("Cancel");
         cancel.setStyle("-fx-background-color: GRAY");

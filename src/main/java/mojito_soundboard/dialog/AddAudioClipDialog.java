@@ -6,8 +6,10 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import mojito_soundboard.controller.MainController;
 import mojito_soundboard.model.AudioClip;
+import mojito_soundboard.util.SupportedAudio;
 
 import java.io.File;
 
@@ -66,7 +68,8 @@ public class AddAudioClipDialog extends JFXDialog {
         ok.setButtonType(JFXButton.ButtonType.RAISED);
         ok.setOnAction(event -> {
             AudioClip newAudioClip = null;
-            if (!name.getText().isEmpty() && !file.getText().isEmpty()) {
+            File tempFile = new File(file.getText());
+            if (!name.getText().isEmpty() && !file.getText().isEmpty() && tempFile.exists() && SupportedAudio.isAudioSupported(tempFile.getPath())) {
                 if (shortcutField.getText().isEmpty()) {
                     newAudioClip = new AudioClip(name.getText(), new File(file.getText()), shortcutField.getText(), jfxColorPicker.getValue());
                 } else {
@@ -74,9 +77,30 @@ public class AddAudioClipDialog extends JFXDialog {
                 }
                 mainController.addAudioClip(newAudioClip);
             } else {
-                // TODO attentions seeker !
+                if(name.getText().isEmpty()) {
+                    name.setFocusColor(new Color(1, 0, 0,1));
+                    name.requestFocus();
+                }else if(file.getText().isEmpty() || !tempFile.exists() || !SupportedAudio.isAudioSupported(tempFile.getPath())){
+                    file.setFocusColor(new Color(1, 0, 0,1));
+                    file.requestFocus();
+                }
             }
         });
+        name.setOnKeyReleased(event -> {
+            if(name.getText().length() > 0) {
+                name.setFocusColor(new Color(0.251,0.349,0.663,1));
+            }else {
+                name.setFocusColor(new Color(1,0,0,1));
+            }
+        });
+        file.setOnKeyReleased(event -> {
+            if(file.getText().length() > 0) {
+                file.setFocusColor(new Color(0.251,0.349,0.663,1));
+            }else{
+                file.setFocusColor(new Color(1,0,0,1));
+            }
+        });
+
         JFXButton cancel = new JFXButton("Cancel");
         cancel.setStyle("-fx-background-color: GRAY");
         cancel.setButtonType(JFXButton.ButtonType.RAISED);

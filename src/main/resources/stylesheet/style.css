@@ -142,7 +142,7 @@ FlowPane {
 
 /* Styling the animated thumb */
 .jfx-slider > .animated-thumb {
-    -fx-background-color: transparent;
+    -fx-background-color: #616161;
 }
 
 /* Styling the slider value text inside animated thumb */

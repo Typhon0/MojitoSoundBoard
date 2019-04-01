@@ -25,6 +25,10 @@
             <Insets right="5.0" top="-15.0" />
          </StackPane.margin>
         </Button>
-        <Label fx:id="copyrightLabel" StackPane.alignment="BOTTOM_CENTER"/>
+        <Label fx:id="copyrightLabel" StackPane.alignment="BOTTOM_CENTER">
+            <StackPane.margin>
+                <Insets bottom="5.0"/>
+            </StackPane.margin>
+        </Label>
     </children>
 </StackPane>

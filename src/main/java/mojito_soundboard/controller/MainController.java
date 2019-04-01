@@ -330,6 +330,8 @@ public class MainController implements StreamPlayerListener {
         edit.setAlignment(Pos.BOTTOM_CENTER);
         container.setFillWidth(true);
         Label name = new Label(audioClip.getName());
+        name.setWrapText(true);
+        name.setMinHeight(buttonsize/2.0);
         name.setAlignment(Pos.CENTER);
         edit.setPadding(new Insets(buttonsize / 4, 0, 0, 0));
         container.getChildren().addAll(name, edit);
@@ -344,15 +346,13 @@ public class MainController implements StreamPlayerListener {
             name.setTextFill(Color.BLACK);
         }
         button.getStyleClass().add("jfx-button");
+        button.setMinSize(buttonsize, buttonsize);
+        button.setPrefSize(buttonsize, buttonsize);
         button.setMaxSize(buttonsize, buttonsize);
-        button.setPrefWidth(buttonsize);
         button.setRipplerFill(audioClip.getColor().darker());
         button.setBackground(new Background(new BackgroundFill(audioClip.getColor(), new CornerRadii(3), new Insets(0, 0, 0, 0))));
         button.setContentDisplay(ContentDisplay.BOTTOM);
         button.setAlignment(Pos.CENTER);
-        button.setPrefHeight(buttonsize);
-        button.setMinHeight(buttonsize);
-        button.setMinWidth(buttonsize);
         button.setCache(true);
 
 

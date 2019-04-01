@@ -16,8 +16,6 @@ import mojito_soundboard.util.DBHelper;
 import mojito_soundboard.util.stream.StreamPlayer;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
 
 import java.util.prefs.Preferences;
 

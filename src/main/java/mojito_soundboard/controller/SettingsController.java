@@ -5,18 +5,17 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import mojito_soundboard.MainApp;
 
-import javax.sound.sampled.*;
-import java.io.IOException;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Mixer;
 
 public class SettingsController {
 
@@ -28,6 +27,9 @@ public class SettingsController {
 
     @FXML
     Button exit;
+
+    @FXML
+    Label copyrightLabel;
 
     private MainApp mainApp;
 
@@ -52,6 +54,7 @@ public class SettingsController {
                 mainApp.getStreamPlayer().setMixerName(newValue);
             });
         });
+        copyrightLabel.setText("© 2019 Typhon0 and LenoirRemi All Rights Reserved");
     }
 
 

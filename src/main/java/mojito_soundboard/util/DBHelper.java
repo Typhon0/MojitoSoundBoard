@@ -299,14 +299,15 @@ public class DBHelper {
         try {
             c = DBHelper.getConnection();
             statement = c.prepareStatement(
-                    "UPDATE AudioClip SET name = ? ,path = ?,shortcut = ?,idSoundboard = ?" +
+                    "UPDATE AudioClip SET name = ?, path = ?, shortcut = ?, color = ?, idSoundboard = ? " +
                             "WHERE id = ?");
 
             statement.setString(1, audioClip.getName());
             statement.setString(2, audioClip.getFile().getPath());
             statement.setString(3, audioClip.getShortcut());
-            statement.setInt(4, audioClip.getIdSoundboard());
-            statement.setInt(5, audioClip.getId());
+            statement.setString(4, audioClip.getColor().toString());
+            statement.setInt(5, audioClip.getIdSoundboard());
+            statement.setInt(6, audioClip.getId());
             statement.executeUpdate();
             c.commit();
 

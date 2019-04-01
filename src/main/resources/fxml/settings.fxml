@@ -11,9 +11,9 @@
 
 <StackPane fx:id="settings" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: white" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mojito_soundboard.controller.SettingsController">
     <children>
-        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" StackPane.alignment="CENTER">
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" StackPane.alignment="CENTER">
             <children>
-            <Label text="Audio device :" />
+                <Label text="Audio device :" />
                 <ComboBox fx:id="audioDeviceList" prefWidth="250.0" />
             </children>
         </VBox>
@@ -25,5 +25,6 @@
             <Insets right="5.0" top="-15.0" />
          </StackPane.margin>
         </Button>
+        <Label fx:id="copyrightLabel" StackPane.alignment="BOTTOM_CENTER"/>
     </children>
 </StackPane>

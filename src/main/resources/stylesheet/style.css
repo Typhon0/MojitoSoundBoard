@@ -13,6 +13,10 @@ FlowPane {
     -fx-background-color: white;
 }
 
+#root {
+    -fx-focus-color: transparent;
+}
+
 .jfx-button {
     -jfx-button-type: RAISED;
 }

@@ -64,7 +64,7 @@ public class EditAudioClipDialog extends JFXDialog {
                 audioClipEdited.setName(name.getText());
             } else if (!file.getText().equals(audioClip.getPath())) {
                 audioClipEdited.setFile(file.getText());
-            } else if (!shortcutField.getText().equals(audioClip.getShortcut())) {
+            } else if (audioClip.getShortcut() != null && !shortcutField.getText().equals(audioClip.getShortcut())) {
                 audioClipEdited.setShortcut(shortcutField.getText());
             }
             audioClipEdited.setColor(jfxColorPicker.getValue());

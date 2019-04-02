@@ -110,6 +110,9 @@ public class AddAudioClipDialog extends JFXDialog {
         this.setDialogContainer(mainController.getDialogstackpane());
         this.setContent(content);
         this.setTransitionType(DialogTransition.CENTER);
+        this.setOnDialogOpened(event -> {
+            name.requestFocus();
+        });
     }
 
 

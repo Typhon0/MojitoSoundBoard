@@ -46,6 +46,9 @@ public class EditSoundboardDialog extends JFXDialog {
         this.setDialogContainer(mainController.getDialogstackpane());
         this.setContent(content);
         this.setTransitionType(DialogTransition.CENTER);
+        this.setOnDialogOpened(event -> {
+            name.requestFocus();
+        });
     }
 
 

@@ -10,6 +10,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,7 @@ import mojito_soundboard.MainApp;
 import mojito_soundboard.dialog.*;
 import mojito_soundboard.model.*;
 import mojito_soundboard.util.DBHelper;
+import mojito_soundboard.util.LayoutAnimator;
 import mojito_soundboard.util.SupportedAudio;
 import mojito_soundboard.util.stream.StreamPlayerEvent;
 import mojito_soundboard.util.stream.StreamPlayerException;
@@ -146,6 +148,11 @@ public class MainController implements StreamPlayerListener {
     private PlayService playService;
 
     /**
+     * Animator to move smoothly buttons when window is resized
+     */
+    private LayoutAnimator layoutAnimator;
+
+    /**
      * Called when the FXML is loaded
      */
     @FXML
@@ -153,6 +160,7 @@ public class MainController implements StreamPlayerListener {
         editMode = new SimpleBooleanProperty(false);
         board = FXCollections.observableArrayList();
         editContainers = new ArrayList<>();
+        layoutAnimator = new LayoutAnimator();
 
         JFXScrollPane.smoothScrolling(scrollpane);
 
@@ -461,6 +469,7 @@ public class MainController implements StreamPlayerListener {
      * @param index index of the soundboard
      */
     public void loadSoundboard(int index) {
+        layoutAnimator.unobserve(grid.getChildren());
         grid.getChildren().clear();
         board.clear();
         if (mainApp.getSoundBoards().size() > 0) {
@@ -479,6 +488,9 @@ public class MainController implements StreamPlayerListener {
             } catch (ArrayIndexOutOfBoundsException e) {
                 soundboardLabel.setText("");
             }
+            Platform.runLater(() -> {
+                layoutAnimator.observe(grid.getChildren());
+            });
         }
     }
 

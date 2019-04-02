@@ -328,7 +328,7 @@ public class DBHelper {
     /**
      * Method to edit a soundboard in the database
      *
-     * @param soundBoard the edited soudnboard
+     * @param soundBoard the edited soundboard
      * @return true if the soundboard is successfully updated
      */
     public static boolean editSoundBoard(SoundBoard soundBoard) {
@@ -340,6 +340,36 @@ public class DBHelper {
                     "UPDATE Soundboard SET name = ? WHERE id = ?");
 
             statement.setString(1, soundBoard.getName());
+            statement.setInt(2, soundBoard.getId());
+            statement.executeUpdate();
+            c.commit();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            cleanConnection(c, statement);
+        }
+        return true;
+    }
+
+    /**
+     * Method to edit mixer in the database
+     *
+     * @param soundBoard the edited soundboard
+     * @return true if the soundboard is successfully updated
+     */
+    public static boolean editMixer(SoundBoard soundBoard, String mixer) {
+        Connection c = null;
+        PreparedStatement statement = null;
+        try {
+            c = DBHelper.getConnection();
+            statement = c.prepareStatement(
+                    "UPDATE Soundboard SET mixer = ? WHERE id = ?");
+
+            statement.setString(1, mixer);
             statement.setInt(2, soundBoard.getId());
             statement.executeUpdate();
             c.commit();

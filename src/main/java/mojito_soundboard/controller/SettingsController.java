@@ -13,9 +13,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import mojito_soundboard.MainApp;
+import mojito_soundboard.util.DBHelper;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Mixer;
+import java.util.logging.Logger;
 
 public class SettingsController {
 
@@ -35,41 +37,29 @@ public class SettingsController {
 
     private final String MIXER_KEY = "MIXER";
 
-    public SettingsController() {
+    private static final Logger logger = Logger.getLogger(SettingsController.class.getName());
 
-    }
+    public SettingsController() {}
 
     @FXML
     public void initialize() {
         Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
-        for (int i = 0; i < mixerInfo.length; i++) {
-            Mixer.Info info = mixerInfo[i];
+        for (Mixer.Info info: mixerInfo){
             audioDeviceList.getItems().add(info.getName());
         }
+
+        copyrightLabel.setText("© 2019 Typhon0 and LenoirRemi All Rights Reserved");
 
         Platform.runLater(() -> {
             audioDeviceList.setValue(mainApp.getPreferences().get(MIXER_KEY, ""));
             audioDeviceList.valueProperty().addListener((observable, oldValue, newValue) -> {
                 mainApp.getPreferences().put(MIXER_KEY, newValue);
                 mainApp.getStreamPlayer().setMixerName(newValue);
+                DBHelper.editMixer(mainApp.getMainController().getCurrentSoundboard(), newValue);
+                logger.info(() -> "Mixer changed to : " + newValue);
             });
         });
-        copyrightLabel.setText("© 2019 Typhon0 and LenoirRemi All Rights Reserved");
     }
-
-
-    public Mixer getMixer(String deviceName) {
-        Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
-        for (int i = 0; i < mixerInfo.length; i++) {
-            Mixer.Info info = mixerInfo[i];
-            if (info.getName().equals(deviceName)) {
-                return AudioSystem.getMixer(info);
-            }
-        }
-
-        return null;
-    }
-
 
     public void exit(ActionEvent actionEvent) {
         Timeline t =
@@ -88,8 +78,6 @@ public class SettingsController {
                         )
                 );
         t.play();
-
-
     }
 
     public void setMainApp(MainApp mainApp) {

@@ -722,4 +722,8 @@ public class MainController implements StreamPlayerListener {
         return dialogstackpane;
     }
 
+    public SoundBoard getCurrentSoundboard(){
+        return mainApp.getSoundBoards().get(currentSoundboardIndex);
+    }
+
 }

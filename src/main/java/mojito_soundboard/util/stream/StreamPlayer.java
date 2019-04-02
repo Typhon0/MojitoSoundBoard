@@ -442,9 +442,9 @@ public class StreamPlayer implements Callable<Void> {
         logger.info("Initiating the line...");
         if (sourceDataLine == null && defaultsourceDataLine == null)
             createLine();
-        if (!sourceDataLine.isOpen() && !defaultsourceDataLine.isOpen())
+        if (sourceDataLine != null && !sourceDataLine.isOpen() && !defaultsourceDataLine.isOpen())
             openLine();
-        else if (!sourceDataLine.getFormat().equals(audioInputStream == null ? null : audioInputStream.getFormat())) {
+        else if (sourceDataLine != null && !sourceDataLine.getFormat().equals(audioInputStream == null ? null : audioInputStream.getFormat())) {
             sourceDataLine.close();
             defaultsourceDataLine.close();
             openLine();
@@ -521,19 +521,25 @@ public class StreamPlayer implements Callable<Void> {
                 mixerName = null;
 
             } else {
-                sourceDataLine = (SourceDataLine) mixer.getLine(lineInfo);
-                defaultsourceDataLine = (SourceDataLine) AudioSystem.getLine(lineInfo);
+                if(mixer.isLineSupported(lineInfo)) {
+                    sourceDataLine = (SourceDataLine) mixer.getLine(lineInfo);
+                    defaultsourceDataLine = (SourceDataLine) AudioSystem.getLine(lineInfo);
+                }
             }
 
 
             //--------------------------------------------------------------------------------
-            logger.info(() -> "Line : " + sourceDataLine);
-            logger.info(() -> "Line Info : " + sourceDataLine.getLineInfo());
-            logger.info(() -> "Line AudioFormat: " + sourceDataLine.getFormat() + "\n");
-            logger.info(() -> "Default device line:\n");
-            logger.info(() -> "Line : " + defaultsourceDataLine);
-            logger.info(() -> "Line Info : " + defaultsourceDataLine.getLineInfo());
-            logger.info(() -> "Line AudioFormat: " + defaultsourceDataLine.getFormat() + "\n");
+            if(mixer != null && mixer.isLineSupported(lineInfo)){
+                logger.info(() -> "Line : " + sourceDataLine);
+                logger.info(() -> "Line Info : " + sourceDataLine.getLineInfo());
+                logger.info(() -> "Line AudioFormat: " + sourceDataLine.getFormat() + "\n");
+                logger.info(() -> "Default device line:\n");
+                logger.info(() -> "Line : " + defaultsourceDataLine);
+                logger.info(() -> "Line Info : " + defaultsourceDataLine.getLineInfo());
+                logger.info(() -> "Line AudioFormat: " + defaultsourceDataLine.getFormat() + "\n");
+            } else {
+                logger.info(() -> "Line cannot be create, Mixer error.\n");
+            }
 
             logger.info("Exited CREATELINE()!:\n");
         }

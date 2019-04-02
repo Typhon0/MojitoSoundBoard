@@ -31,6 +31,8 @@ public class MainApp extends Application {
 
     private Preferences preferences;
 
+    private MainController mainController;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
@@ -46,6 +48,7 @@ public class MainApp extends Application {
             rootLayout = loader.load();
             MainController mainController = loader.getController();
             mainController.setMainApp(this);
+            this.mainController = mainController;
             initKeyboardListener();
             this.primaryStage.setTitle("Mojito SoundBoard");
             this.primaryStage.setScene(new Scene(rootLayout, 600, 500));
@@ -97,6 +100,8 @@ public class MainApp extends Application {
     public Preferences getPreferences() {
         return preferences;
     }
+
+    public MainController getMainController() { return mainController; }
 
     @Override
     public void stop() throws Exception {
